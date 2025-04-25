@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BigWin10 - Mystery Box</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: white;
+      overflow-x: hidden;
+    }
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: #1a1a2e;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #f9f871;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #444;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .credits {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      color: #00ffcc;
+    }
+    .open-btn {
+      background: #ff007f;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.2em;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .open-btn:hover {
+      background: #ff4d94;
+    }
+    .item-result {
+      margin-top: 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+    .animation-box {
+      margin-top: 20px;
+      height: 150px;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2em;
+      border-radius: 10px;
+      border: 1px solid #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">BigWin10 🎁 Mystery iPhone Box</div>
+  <div class="container">
+    <div class="credits">Credits: <span id="credit-count">1000</span></div>
+    <button class="open-btn" onclick="openBox()">Open Box (Cost: 200 credits)</button>
+    <div class="animation-box" id="animation">🎲 Spinning...</div>
+    <div class="item-result" id="result"></div>
+  </div>
+
+  <script>
+    const items = [
+      { name: "iPhone 15 Pro Max", chance: 1, emoji: "📱" },
+      { name: "iPhone 14", chance: 5, emoji: "📱" },
+      { name: "AirPods Pro", chance: 10, emoji: "🎧" },
+      { name: "Apple Watch", chance: 15, emoji: "⌚" },
+      { name: "Charging Cable", chance: 25, emoji: "🔌" },
+      { name: "Sticker Pack", chance: 44, emoji: "📦" },
+    ];
+
+    let credits = 1000;
+
+    function openBox() {
+      if (credits < 200) {
+        alert("Not enough credits!");
+        return;
+      }
+      credits -= 200;
+      document.getElementById("credit-count").textContent = credits;
+      document.getElementById("animation").textContent = "🎁 Opening box...";
+      document.getElementById("result").textContent = "";
+
+      setTimeout(() => {
+        const roll = Math.random() * 100;
+        let total = 0;
+        let selected;
+
+        for (const item of items) {
+          total += item.chance;
+          if (roll <= total && !selected) {
+            selected = item;
+          }
+        }
+
+        document.getElementById("animation").textContent = `${selected.emoji} ${selected.name}`;
+        document.getElementById("result").textContent = `🎉 You won: ${selected.name}`;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
