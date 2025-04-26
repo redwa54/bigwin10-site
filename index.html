@@ -75,7 +75,6 @@
       color: #ff2a00;
     }
     .prize-area {
-      display: none;
       text-align: center;
       margin-top: 30px;
     }
@@ -83,35 +82,34 @@
       width: 150px;
       margin-top: 10px;
     }
-
-    /* Centered Prize Slider */
     .prize-slider-container {
-      display: flex;
-      justify-content: center;
-      overflow: hidden;
       width: 80%;
-      margin: 0 auto;
-      height: 80px;
+      overflow: hidden;
+      border: 2px solid #ff4c00;
+      border-radius: 10px;
+      margin: 20px auto;
       position: relative;
+      height: 100px;
     }
-
     .prize-slider {
       display: flex;
-      animation: spinPrize 5s ease-out infinite; /* Infinite loop */
-      white-space: nowrap;
+      transition: transform 5s cubic-bezier(0.1, 0.9, 0.2, 1);
+      will-change: transform;
     }
     .prize-slider img {
+      height: 100px;
+      margin: 0 5px;
+    }
+    .highlight {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
       height: 100%;
-      margin-right: 15px;
-    }
-    @keyframes spinPrize {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Winner highlight */
-    .winner {
-      border: 5px solid #ff4c00;
+      width: 100px;
+      border-left: 3px solid #ff4c00;
+      border-right: 3px solid #ff4c00;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -125,7 +123,6 @@
     </div>
   </header>
 
-  <!-- Loot Boxes -->
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate (100 credits)</p>
@@ -149,46 +146,22 @@
     </div>
   </div>
 
-  <!-- Prize Reveal -->
-  <div id="prizeArea" class="prize-area">
+  <div id="prizeArea" class="prize-area" style="display:none;">
     <div class="prize-slider-container">
-      <div id="prizeSlider" class="prize-slider">
-        <!-- Prizes will appear here dynamically -->
-      </div>
+      <div class="highlight"></div>
+      <div id="prizeSlider" class="prize-slider"></div>
     </div>
     <h2 id="prizeText">🎉 You won a prize!</h2>
     <img id="prizeImage" src="" alt="Prize" />
   </div>
 
-  <!-- Links to Other Pages -->
   <div class="link-container">
     <a href="wallet.html">Deposit/Withdraw</a>
     <a href="inventory.html">View Inventory</a>
     <a href="index.html">Refresh Crates</a>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/konami.js"></script>
   <script>
-    // Handle User Login and Balance
-    window.onload = function() {
-      const user = localStorage.getItem('username');
-      const balance = localStorage.getItem('balance') || 0;
-
-      if (user) {
-        document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-        document.getElementById('loginLink').style.display = 'none';
-        document.getElementById('logoutButton').style.display = 'inline';
-      }
-    };
-
-    // Handle Logout
-    document.getElementById('logoutButton').addEventListener('click', function() {
-      localStorage.removeItem('username');
-      localStorage.removeItem('balance');
-      window.location.reload();
-    });
-
-    // Prize List (The available prizes in each crate type)
     const crates = {
       iphone: [
         { name: 'iPhone 15 Pro', img: 'images/iphone-15-pro.jpg' },
@@ -223,52 +196,45 @@
       ],
     };
 
-    // Handle Loot Crate Opening
     function openCrate(type) {
       const user = localStorage.getItem('username');
-      if (!user) {
-        alert('Please login to open a crate.');
-        return;
-      }
+      if (!user) return alert('Please login to open a crate.');
 
       let balance = parseInt(localStorage.getItem('balance') || '0');
-      if (balance < 100) {
-        alert('Not enough credits to open this crate.');
-        return;
-      }
+      if (balance < 100) return alert('Not enough credits to open this crate.');
 
       balance -= 100;
       localStorage.setItem('balance', balance);
       document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
 
       const prizeArea = document.getElementById('prizeArea');
+      const prizeSlider = document.getElementById('prizeSlider');
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
-      const prizeSlider = document.getElementById('prizeSlider');
-      prizeArea.style.display = 'none';
+      prizeArea.style.display = 'block';
 
-      // Add all prizes to the prizeSlider
-      prizeSlider.innerHTML = '';
       const prizes = crates[type];
-      prizes.forEach(prize => {
+      const extended = [...prizes, ...prizes, ...prizes];
+
+      prizeSlider.innerHTML = '';
+      extended.forEach(prize => {
         const img = document.createElement('img');
         img.src = prize.img;
         img.alt = prize.name;
         prizeSlider.appendChild(img);
       });
 
-      // Animate and stop on a prize after 5 seconds
+      const winningIndex = prizes.length + Math.floor(Math.random() * prizes.length);
+      const prizeWidth = 110;
+      const offset = prizeWidth * winningIndex - (document.querySelector('.prize-slider-container').offsetWidth / 2) + (prizeWidth / 2);
+
+      prizeSlider.style.transform = `translateX(-${offset}px)`;
+
       setTimeout(() => {
-        const prize = prizes[Math.floor(Math.random() * prizes.length)];
+        const prize = extended[winningIndex];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
-        prizeArea.style.display = 'block';
-
-        // Highlight the winning prize
-        const allPrizes = prizeSlider.querySelectorAll('img');
-        allPrizes.forEach(img => img.classList.remove('winner')); // Remove previous highlights
-        allPrizes[prizes.indexOf(prize)].classList.add('winner'); // Add highlight to winning prize
-      }, 5000); // After 5 seconds of looping
+      }, 5200);
     }
   </script>
 </body>
