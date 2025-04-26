@@ -74,6 +74,25 @@
     .link-container a:hover {
       color: #ff2a00;
     }
+    .prize-area {
+      display: none;
+      text-align: center;
+      margin-top: 30px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .prize-area img {
+      width: 150px;
+      margin-top: 10px;
+      animation: popIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -100,6 +119,12 @@
       <p>Random Crate (100 credits)</p>
       <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
     </div>
+  </div>
+
+  <!-- Prize Reveal -->
+  <div id="prizeArea" class="prize-area">
+    <h2 id="prizeText">🎉 You won a prize!</h2>
+    <img id="prizeImage" src="" alt="Prize" />
   </div>
 
   <!-- Links to Other Pages -->
@@ -135,16 +160,22 @@
         { name: 'iPhone 15 Pro', img: 'images/iphone-15-pro.jpg' },
         { name: 'iPhone 14 Pro', img: 'images/iphone-14-pro.jpg' },
         { name: 'iPhone 13 Pro', img: 'images/iphone-13-pro.jpg' },
+        { name: 'iPhone 12 Pro', img: 'images/iphone-12-pro.jpg' },
+        { name: 'iPhone Case', img: 'images/iphone-case.jpg' },
       ],
       gaming: [
         { name: 'PS5 Console', img: 'images/ps5-console.jpg' },
         { name: 'Xbox Series X', img: 'images/xbox-series-x.jpg' },
         { name: 'Gaming PC', img: 'images/gaming-pc.jpg' },
+        { name: 'Gaming Mouse', img: 'images/gaming-mouse.jpg' },
+        { name: 'Gaming Keyboard', img: 'images/gaming-keyboard.jpg' },
       ],
       random: [
         { name: 'Gold Bar', img: 'images/mystery-gold-bar.jpg' },
         { name: '1000 Credits', img: 'images/1000-credits.jpg' },
         { name: 'Lucky Voucher', img: 'images/lucky-voucher.jpg' },
+        { name: 'Mystery Box', img: 'images/mystery-box.jpg' },
+        { name: 'Surprise Item', img: 'images/surprise-item.jpg' },
       ],
     };
 
@@ -169,13 +200,14 @@
       const prizeArea = document.getElementById('prizeArea');
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
-      prizeArea.style.display = 'block';
+      prizeArea.style.display = 'none';
+
       setTimeout(() => {
         const prize = crates[type][Math.floor(Math.random() * crates[type].length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
+        prizeArea.style.display = 'block';
 
-        // Store the prize in localStorage (inventory)
         let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
         inventory.push(prize);
         localStorage.setItem('inventory', JSON.stringify(inventory));
