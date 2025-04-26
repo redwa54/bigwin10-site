@@ -125,15 +125,15 @@
 
   <!-- Loot Boxes -->
   <div class="box-selection">
-    <div class="loot-box" onclick="openCrate('iphone')">
+    <div class="loot-box" onclick="window.location.href='iphone-crate.html'">
       <p>iPhone Crate (100 credits)</p>
       <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
     </div>
-    <div class="loot-box" onclick="openCrate('gaming')">
+    <div class="loot-box" onclick="window.location.href='gaming-crate.html'">
       <p>Gaming Crate (100 credits)</p>
       <img src="images/ps5-console.jpg" alt="Gaming Crate" />
     </div>
-    <div class="loot-box" onclick="openCrate('nintendo')">
+    <div class="loot-box" onclick="window.location.href='nintendo-crate.html'">
       <p>Nintendo Crate (150 credits)</p>
       <img src="images/nintendo-switch.jpg" alt="Nintendo Crate" />
     </div>
@@ -172,7 +172,7 @@
       window.location.reload();
     });
 
-    // Handle Loot Crate Opening
+    // Handle Loot Crate Opening (keeps the animation)
     function openCrate(type) {
       const user = localStorage.getItem('username');
       if (!user) {
