@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BigWin10 Loot Crate</title>
+  <title>Loot Crates</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -22,12 +22,6 @@
       font-size: 2rem;
       color: #ff4c00;
     }
-    .balance-bar {
-      background: #222;
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin: 20px;
-    }
     .box-selection {
       display: flex;
       gap: 20px;
@@ -43,31 +37,28 @@
       cursor: pointer;
       transition: transform 0.3s;
       text-align: center;
+      width: 160px;
     }
     .loot-box:hover {
       transform: scale(1.03);
     }
     .loot-box img {
-      width: 120px;
-      animation: pulse 2s infinite ease-in-out;
+      width: 100px;
+      margin-top: 10px;
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    .link-container {
+      margin-top: 30px;
+      text-align: center;
     }
-    button {
-      background: #ff4c00;
-      border: none;
-      color: #fff;
-      padding: 15px 30px;
+    .link-container a {
+      color: #ff4c00;
       font-size: 1.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 20px;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.3s;
     }
-    button:hover {
-      background: #ff2a00;
+    .link-container a:hover {
+      color: #ff2a00;
     }
     .prize {
       margin-top: 30px;
@@ -76,32 +67,22 @@
       display: none;
     }
     .prize img {
-      max-width: 300px;
+      max-width: 200px;
       margin: 20px 0;
       border-radius: 15px;
       box-shadow: 0 0 15px #ff4c00;
+      animation: spin 1s ease-in-out;
     }
-    .rolling {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      animation: flash 1s infinite;
-    }
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <header>BigWin10 Crates</header>
-  <div class="balance-bar" id="balanceBar">Balance: 0 Credits</div>
+  <header>Loot Crates</header>
 
+  <!-- Loot Boxes -->
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate</p>
@@ -117,101 +98,65 @@
     </div>
   </div>
 
+  <!-- Links to Other Pages -->
+  <div class="link-container">
+    <a href="wallet.html">Deposit/Withdraw</a>
+    <a href="index.html">Refresh Crates</a>
+  </div>
+
+  <!-- Prize Display -->
   <div class="prize" id="prizeArea">
-    <p class="rolling" id="rollingText">🎲 Rolling...</p>
-    <p id="prizeText">🎉 You won an iPhone 15 Pro!</p>
-    <img src="images/iphone-15-pro.jpg" alt="Prize" id="prizeImage" />
+    <p id="prizeText">🎉 You won a prize!</p>
+    <img id="prizeImage" src="" alt="Prize" />
   </div>
 
-  <!-- Deposit & Withdraw Section -->
-  <div class="form-container">
-    <input type="number" id="depositAmount" placeholder="Amount to Deposit" />
-    <button onclick="depositCredits()">Deposit</button>
-    <input type="number" id="withdrawAmount" placeholder="Amount to Withdraw" />
-    <button onclick="withdrawCredits()">Withdraw</button>
-  </div>
-
+  <!-- Sound Effects -->
   <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
-  <audio id="sound-rare" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c7924c2a53.mp3?filename=win-notification-129485.mp3"></audio>
-  <audio id="sound-legendary" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9d38d28b0.mp3?filename=success-1-6297.mp3"></audio>
 
   <script>
-    let userBalance = 0; // Starting balance
-    const balanceBar = document.getElementById("balanceBar");
-
     const crates = {
       iphone: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
-        { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
+        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg" },
+        { name: "iPhone 14", img: "images/iphone-14.jpg" },
+        { name: "iPhone Case", img: "images/iphone-case.jpg" }
       ],
       gaming: [
-        { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" },
+        { name: "PS5 Console", img: "images/ps5-console.jpg" },
+        { name: "PS5 Controller", img: "images/ps5-controller.jpg" },
+        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg" }
       ],
       random: [
-        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", rarity: "legendary" },
-        { name: "Smart Watch", img: "images/smart-watch.jpg", rarity: "rare" },
-        { name: "Sticker Pack", img: "images/sticker-pack.jpg", rarity: "common" },
+        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg" },
+        { name: "Smart Watch", img: "images/smart-watch.jpg" },
+        { name: "Sticker Pack", img: "images/sticker-pack.jpg" },
+        { name: "VR Headset", img: "images/vr-headset.jpg" },
+        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg" },
+        { name: "Gaming Chair", img: "images/gaming-chair.jpg" },
+        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg" },
+        { name: "Drone", img: "images/drone.jpg" },
+        { name: "Portable SSD", img: "images/portable-ssd.jpg" },
+        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg" },
+        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg" },
+        { name: "Monitor", img: "images/monitor.jpg" },
+        { name: "Webcam", img: "images/webcam.jpg" }
       ]
     };
 
-    const raritySounds = {
-      common: document.getElementById("sound-common"),
-      rare: document.getElementById("sound-rare"),
-      legendary: document.getElementById("sound-legendary"),
-    };
-
     function openCrate(type) {
-      if (userBalance < 100) {
-        alert("Not enough credits!");
-        return;
-      }
-
-      userBalance -= 100;
-      balanceBar.innerText = `Balance: ${userBalance} Credits`;
-
-      const prizeArea = document.getElementById("prizeArea");
-      const prizeText = document.getElementById("prizeText");
-      const prizeImage = document.getElementById("prizeImage");
-      const rollingText = document.getElementById("rollingText");
-
-      prizeArea.style.display = "block";
-      rollingText.style.display = "block";
-      prizeText.style.display = "none";
-      prizeImage.style.display = "none";
-
-      const prizeList = crates[type];
-      const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
-
+      const prizeArea = document.getElementById('prizeArea');
+      const prizeText = document.getElementById('prizeText');
+      const prizeImage = document.getElementById('prizeImage');
+      const list = crates[type];
+      // show prize area
+      prizeArea.style.display = 'block';
+      // simulate spin
       setTimeout(() => {
-        rollingText.style.display = "none";
+        const prize = list[Math.floor(Math.random() * list.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
-        prizeText.style.display = "block";
-        prizeImage.style.display = "block";
-        raritySounds[prize.rarity].play();
+        document.getElementById('sound-common').play();
       }, 2000);
     }
-
-    // Deposit function
-    function depositCredits() {
-      const depositAmount = document.getElementById("depositAmount").value;
-      if (depositAmount <= 0) {
-        alert("Please enter a valid amount to deposit!");
-        return;
-      }
-      userBalance += parseInt(depositAmount);
-      balanceBar.innerText = `Balance: ${userBalance} Credits`;
-    }
-
-    // Withdraw function
-    function withdrawCredits() {
-      const withdrawAmount = document.getElementById("withdrawAmount").value;
-      if (withdrawAmount <= 0 || withdrawAmount > userBalance) {
-        alert("Invalid amount or insufficient balance!");
-        return;
-      }
-      userBalance -= parseInt(withdrawAmount);
-      balanceBar.innerText = `Balance:
+  </script>
+</body>
+</html>
