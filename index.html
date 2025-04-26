@@ -14,44 +14,34 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       min-height: 100vh;
     }
     header {
       padding: 20px;
       font-size: 2rem;
       color: #ff4c00;
+      position: relative;
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #1e1e1e;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-    }
-    header a {
-      color: #ff4c00;
-      text-decoration: none;
-      font-size: 1.2rem;
     }
     .user-info {
       font-size: 1rem;
-      display: flex;
-      align-items: center;
     }
     .logout-button {
       margin-left: 10px;
       color: #ff4c00;
       cursor: pointer;
       text-decoration: underline;
-      font-size: 1rem;
     }
     .box-selection {
       display: flex;
       gap: 20px;
-      margin: 40px 0;
+      margin: 20px 0;
       flex-wrap: wrap;
       justify-content: center;
-      width: 100%;
-      max-width: 1200px;
     }
     .loot-box {
       background: #1e1e1e;
@@ -64,16 +54,15 @@
       width: 160px;
     }
     .loot-box:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
     .loot-box img {
       width: 100px;
       margin-top: 10px;
     }
     .link-container {
-      margin: 30px 0;
+      margin-top: 30px;
       text-align: center;
-      width: 100%;
     }
     .link-container a {
       color: #ff4c00;
@@ -85,35 +74,19 @@
     .link-container a:hover {
       color: #ff2a00;
     }
-    .prize {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 1.5rem;
-      display: none;
-    }
-    .prize img {
-      max-width: 200px;
-      margin: 20px 0;
-      border-radius: 15px;
-      box-shadow: 0 0 15px #ff4c00;
-      animation: spin 1s ease-in-out;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
   <header>
-    <a href="index.html">Loot Crates</a>
+    <div><a href="index.html" style="color: #ff4c00;">Loot Crates</a></div>
     <div class="user-info">
       <span id="userBalance">User: Not logged in | Balance: 0</span>
-      <a href="login.html" id="loginLink" style="margin-left:10px;">Login</a>
-      <span id="logoutButton" class="logout-button" style="display:none;">Logout</span>
+      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
+      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
     </div>
   </header>
 
+  <!-- Loot Boxes -->
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate (100 credits)</p>
@@ -129,81 +102,85 @@
     </div>
   </div>
 
+  <!-- Links to Other Pages -->
   <div class="link-container">
     <a href="wallet.html">Deposit/Withdraw</a>
     <a href="inventory.html">View Inventory</a>
-    <a href="index.html">Home</a>
+    <a href="index.html">Refresh Crates</a>
   </div>
-
-  <div class="prize" id="prizeArea">
-    <p id="prizeText">🎉 You won a prize!</p>
-    <img id="prizeImage" src="" alt="Prize" />
-  </div>
-
-  <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
 
   <script>
-    const crates = {
-      iphone: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", value: 1500 },
-        { name: "iPhone 14", img: "images/iphone-14.jpg", value: 1200 },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", value: 100 }
-      ],
-      gaming: [
-        { name: "PS5 Console", img: "images/ps5-console.jpg", value: 800 },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg", value: 250 },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", value: 150 }
-      ],
-      random: [
-        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", value: 1000 },
-        { name: "Smart Watch", img: "images/smart-watch.jpg", value: 300 },
-        { name: "Sticker Pack", img: "images/sticker-pack.jpg", value: 20 },
-        { name: "VR Headset", img: "images/vr-headset.jpg", value: 500 },
-        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg", value: 120 },
-        { name: "Gaming Chair", img: "images/gaming-chair.jpg", value: 400 },
-        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg", value: 180 },
-        { name: "Drone", img: "images/drone.jpg", value: 700 },
-        { name: "Portable SSD", img: "images/portable-ssd.jpg", value: 150 },
-        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg", value: 80 },
-        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg", value: 100 },
-        { name: "Monitor", img: "images/monitor.jpg", value: 300 },
-        { name: "Webcam", img: "images/webcam.jpg", value: 90 }
-      ]
+    // Handle User Login and Balance
+    window.onload = function() {
+      const user = localStorage.getItem('username');
+      const balance = localStorage.getItem('balance') || 0;
+
+      if (user) {
+        document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
+        document.getElementById('loginLink').style.display = 'none';
+        document.getElementById('logoutButton').style.display = 'inline';
+      }
     };
 
+    // Handle Logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('balance');
+      window.location.reload();
+    });
+
+    // Prize List (The available prizes in each crate type)
+    const crates = {
+      iphone: [
+        { name: 'iPhone 15 Pro', img: 'images/iphone-15-pro.jpg' },
+        { name: 'iPhone 14 Pro', img: 'images/iphone-14-pro.jpg' },
+        { name: 'iPhone 13 Pro', img: 'images/iphone-13-pro.jpg' },
+      ],
+      gaming: [
+        { name: 'PS5 Console', img: 'images/ps5-console.jpg' },
+        { name: 'Xbox Series X', img: 'images/xbox-series-x.jpg' },
+        { name: 'Gaming PC', img: 'images/gaming-pc.jpg' },
+      ],
+      random: [
+        { name: 'Gold Bar', img: 'images/mystery-gold-bar.jpg' },
+        { name: '1000 Credits', img: 'images/1000-credits.jpg' },
+        { name: 'Lucky Voucher', img: 'images/lucky-voucher.jpg' },
+      ],
+    };
+
+    // Handle Loot Crate Opening
     function openCrate(type) {
       const user = localStorage.getItem('username');
-      if (!user) { alert('Please login to open a crate.'); return; }
+      if (!user) {
+        alert('Please login to open a crate.');
+        return;
+      }
+
       let balance = parseInt(localStorage.getItem('balance') || '0');
-      if (balance < 100) { alert('Not enough credits.'); return; }
+      if (balance < 100) {
+        alert('Not enough credits to open this crate.');
+        return;
+      }
+
       balance -= 100;
       localStorage.setItem('balance', balance);
       document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-      const prizeArea = document.getElementById('prizeArea'), prizeText = document.getElementById('prizeText'), prizeImage = document.getElementById('prizeImage');
+
+      const prizeArea = document.getElementById('prizeArea');
+      const prizeText = document.getElementById('prizeText');
+      const prizeImage = document.getElementById('prizeImage');
       prizeArea.style.display = 'block';
       setTimeout(() => {
-        const prize = crates[type][Math.floor(Math.random()*crates[type].length)];
+        const prize = crates[type][Math.floor(Math.random() * crates[type].length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
-        document.getElementById('sound-common').play();
-        let inventory = JSON.parse(localStorage.getItem('inventory'))||[];
+
+        // Store the prize in localStorage (inventory)
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
         inventory.push(prize);
         localStorage.setItem('inventory', JSON.stringify(inventory));
-      },2000);
+      }, 2000);
     }
-
-    window.onload = function() {
-      const user = localStorage.getItem('username');
-      const balance = localStorage.getItem('balance')||0;
-      if (user) {
-        document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-        document.getElementById('loginLink').style.display='none';
-        document.getElementById('logoutButton').style.display='inline';
-      }
-    };
-    document.getElementById('logoutButton').addEventListener('click', ()=>{
-      localStorage.removeItem('username'); localStorage.removeItem('balance'); window.location.href='login.html';
-    });
   </script>
 </body>
 </html>
