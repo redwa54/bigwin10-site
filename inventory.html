@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Loot Crates</title>
+  <title>Inventory</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -22,145 +22,91 @@
       font-size: 2rem;
       color: #ff4c00;
     }
-    .box-selection {
-      display: flex;
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-      justify-content: center;
+      width: 90%;
+      max-width: 1200px;
+      margin-top: 20px;
     }
-    .loot-box {
+    .item-card {
       background: #1e1e1e;
-      padding: 20px;
-      border-radius: 20px;
-      border: 2px solid #ff4c00;
-      cursor: pointer;
-      transition: transform 0.3s;
-      text-align: center;
-      width: 160px;
-    }
-    .loot-box:hover {
-      transform: scale(1.03);
-    }
-    .loot-box img {
-      width: 100px;
-      margin-top: 10px;
-    }
-    .link-container {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .link-container a {
-      color: #ff4c00;
-      font-size: 1.2rem;
-      text-decoration: none;
-      margin: 0 10px;
-      transition: color 0.3s;
-    }
-    .link-container a:hover {
-      color: #ff2a00;
-    }
-    .prize {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 1.5rem;
-      display: none;
-    }
-    .prize img {
-      max-width: 200px;
-      margin: 20px 0;
+      padding: 15px;
       border-radius: 15px;
-      box-shadow: 0 0 15px #ff4c00;
-      animation: spin 1s ease-in-out;
+      border: 2px solid #ff4c00;
+      text-align: center;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .item-card img {
+      width: 100px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .item-card button {
+      background: #ff4c00;
+      border: none;
+      padding: 5px 10px;
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <header>Loot Crates</header>
-
-  <!-- Loot Boxes -->
-  <div class="box-selection">
-    <div class="loot-box" onclick="openCrate('iphone')">
-      <p>iPhone Crate</p>
-      <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
-    </div>
-    <div class="loot-box" onclick="openCrate('gaming')">
-      <p>Gaming Crate</p>
-      <img src="images/ps5-console.jpg" alt="Gaming Crate" />
-    </div>
-    <div class="loot-box" onclick="openCrate('random')">
-      <p>Random Crate</p>
-      <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
-    </div>
-  </div>
-
-  <!-- Links to Other Pages -->
-  <div class="link-container">
-    <a href="wallet.html">Deposit/Withdraw</a>
-    <a href="inventory.html">View Inventory</a>
-    <a href="index.html">Refresh Crates</a>
-  </div>
-
-  <!-- Prize Display -->
-  <div class="prize" id="prizeArea">
-    <p id="prizeText">🎉 You won a prize!</p>
-    <img id="prizeImage" src="" alt="Prize" />
-  </div>
-
-  <!-- Sound Effects -->
-  <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
+  <header>My Inventory</header>
+  <div class="inventory-grid" id="inventoryContainer"></div>
 
   <script>
-    const crates = {
-      iphone: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", value: 1500 },
-        { name: "iPhone 14", img: "images/iphone-14.jpg", value: 1200 },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", value: 100 }
-      ],
-      gaming: [
-        { name: "PS5 Console", img: "images/ps5-console.jpg", value: 800 },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg", value: 250 },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", value: 150 }
-      ],
-      random: [
-        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", value: 1000 },
-        { name: "Smart Watch", img: "images/smart-watch.jpg", value: 300 },
-        { name: "Sticker Pack", img: "images/sticker-pack.jpg", value: 20 },
-        { name: "VR Headset", img: "images/vr-headset.jpg", value: 500 },
-        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg", value: 120 },
-        { name: "Gaming Chair", img: "images/gaming-chair.jpg", value: 400 },
-        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg", value: 180 },
-        { name: "Drone", img: "images/drone.jpg", value: 700 },
-        { name: "Portable SSD", img: "images/portable-ssd.jpg", value: 150 },
-        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg", value: 80 },
-        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg", value: 100 },
-        { name: "Monitor", img: "images/monitor.jpg", value: 300 },
-        { name: "Webcam", img: "images/webcam.jpg", value: 90 }
-      ]
-    };
+    function loadInventory() {
+      const container = document.getElementById('inventoryContainer');
+      const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
 
-    function openCrate(type) {
-      const prizeArea = document.getElementById('prizeArea');
-      const prizeText = document.getElementById('prizeText');
-      const prizeImage = document.getElementById('prizeImage');
-      const list = crates[type];
-      prizeArea.style.display = 'block';
-      setTimeout(() => {
-        const prize = list[Math.floor(Math.random() * list.length)];
-        prizeText.innerText = `🎉 You won a ${prize.name}!`;
-        prizeImage.src = prize.img;
-        document.getElementById('sound-common').play();
+      container.innerHTML = '';
 
-        // Store the prize in inventory
-        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-        inventory.push(prize);
-        localStorage.setItem('inventory', JSON.stringify(inventory));
-      }, 2000);
+      if (inventory.length === 0) {
+        container.innerHTML = '<p>No items in inventory.</p>';
+        return;
+      }
+
+      inventory.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <p>${item.name}</p>
+          <p>Value: ${item.value} credits</p>
+          <button onclick="collectItem(${index})">Collect</button>
+          <button onclick="cashInItem(${index}, ${item.value})">Cash In</button>
+        `;
+
+        container.appendChild(card);
+      });
     }
+
+    function collectItem(index) {
+      let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+      inventory.splice(index, 1);
+      localStorage.setItem('inventory', JSON.stringify(inventory));
+      alert('Item collected!');
+      loadInventory();
+    }
+
+    function cashInItem(index, value) {
+      let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+      inventory.splice(index, 1);
+      localStorage.setItem('inventory', JSON.stringify(inventory));
+
+      let balance = parseInt(localStorage.getItem('balance') || '0');
+      balance += value;
+      localStorage.setItem('balance', balance);
+
+      alert(`Cashed in for ${value} credits!`);
+      loadInventory();
+    }
+
+    loadInventory();
   </script>
 </body>
 </html>
