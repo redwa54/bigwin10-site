@@ -97,6 +97,7 @@
     /* Spinning animation for prizes */
     .prize-slider {
       display: flex;
+      justify-content: center;  /* Center the images */
       overflow: hidden;
       width: 80%;
       margin: 0 auto;
@@ -112,22 +113,6 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
-
-    /* Confetti animation */
-    .confetti {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 10px;
-      height: 10px;
-      background-color: #ff4c00;
-      animation: confettiFall 1.5s linear infinite;
-    }
-    @keyframes confettiFall {
-      0% { transform: translateX(0) translateY(0); }
-      100% { transform: translateX(100px) translateY(400px); }
-    }
-
   </style>
 </head>
 <body>
@@ -275,30 +260,7 @@
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         prizeArea.style.display = 'block';
-
-        // Store the prize in localStorage (inventory)
-        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-        inventory.push(prize);
-        localStorage.setItem('inventory', JSON.stringify(inventory));
-
-        // Trigger confetti animation
-        triggerConfetti();
       }, 3000); // After 3 seconds of spinning
-    }
-
-    // Confetti function
-    function triggerConfetti() {
-      for (let i = 0; i < 100; i++) {
-        let confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.left = `${Math.random() * 100}%`;
-        document.body.appendChild(confetti);
-
-        // Remove confetti after animation
-        setTimeout(() => {
-          confetti.remove();
-        }, 1500);
-      }
     }
   </script>
 </body>
