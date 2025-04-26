@@ -40,6 +40,7 @@
       justify-content: center;
       text-align: center;
       padding: 0 20px;
+      position: relative;
     }
     .hero::after {
       content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
@@ -68,6 +69,7 @@
       transition: transform .3s, box-shadow .3s;
       text-align: center;
       cursor: pointer;
+      scroll-margin-top: 100px; /* ensure header offset */
     }
     .crate-card:hover {
       transform: translateY(-5px);
@@ -87,6 +89,9 @@
 
     /* Footer spacing */
     footer { height:40px; }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body>
@@ -168,15 +173,17 @@
       rare: document.getElementById('sound-rare'),
       legendary: document.getElementById('sound-legendary')
     };
-    function scrollToCrates(){ document.getElementById('crates').scrollIntoView({behavior:'smooth'}); }
+    function scrollToCrates(){ document.getElementById('crates').scrollIntoView({behavior:'smooth', block:'start'}); }
     function openCrate(type, element){
       if(userBalance<100){ alert('Not enough credits!'); return; }
       userBalance -=100;
       balanceBar.innerText = 'Balance: '+userBalance+' Credits';
-      const list=crates[type];
-      const prize=list[Math.floor(Math.random()*list.length)];
+      // spin effect
       element.classList.add('spinning');
-      setTimeout(()=>{ element.classList.remove('spinning');
+      const prizeList = crates[type];
+      const prize = prizeList[Math.floor(Math.random()*prizeList.length)];
+      setTimeout(()=>{
+        element.classList.remove('spinning');
         document.getElementById('prizeText').innerText='🎉 You won a '+prize.name+'!';
         document.getElementById('prizeImage').src=prize.img;
         document.getElementById('prizeArea').style.display='block';
