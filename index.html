@@ -93,6 +93,25 @@
       0% { transform: scale(0); }
       100% { transform: scale(1); }
     }
+
+    /* Spinning animation for prizes */
+    .prize-slider {
+      display: flex;
+      overflow: hidden;
+      width: 80%;
+      margin: 0 auto;
+      height: 80px;
+      position: relative;
+      animation: spinPrize 3s linear infinite;
+    }
+    .prize-slider img {
+      height: 100%;
+      margin-right: 10px;
+    }
+    @keyframes spinPrize {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
   </style>
 </head>
 <body>
@@ -119,10 +138,21 @@
       <p>Random Crate (100 credits)</p>
       <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
     </div>
+    <div class="loot-box" onclick="openCrate('electronics')">
+      <p>Electronics Crate (200 credits)</p>
+      <img src="images/electronics-crate.jpg" alt="Electronics Crate" />
+    </div>
+    <div class="loot-box" onclick="openCrate('fashion')">
+      <p>Fashion Crate (150 credits)</p>
+      <img src="images/fashion-crate.jpg" alt="Fashion Crate" />
+    </div>
   </div>
 
   <!-- Prize Reveal -->
   <div id="prizeArea" class="prize-area">
+    <div id="prizeSlider" class="prize-slider">
+      <!-- Prizes will appear here dynamically -->
+    </div>
     <h2 id="prizeText">🎉 You won a prize!</h2>
     <img id="prizeImage" src="" alt="Prize" />
   </div>
@@ -177,6 +207,16 @@
         { name: 'Mystery Box', img: 'images/mystery-box.jpg' },
         { name: 'Surprise Item', img: 'images/surprise-item.jpg' },
       ],
+      electronics: [
+        { name: 'Smart Watch', img: 'images/smartwatch.jpg' },
+        { name: 'Bluetooth Speaker', img: 'images/bluetooth-speaker.jpg' },
+        { name: 'Wireless Headphones', img: 'images/wireless-headphones.jpg' },
+      ],
+      fashion: [
+        { name: 'Leather Jacket', img: 'images/leather-jacket.jpg' },
+        { name: 'Designer Shoes', img: 'images/designer-shoes.jpg' },
+        { name: 'Smartphone Wallet', img: 'images/smartphone-wallet.jpg' },
+      ],
     };
 
     // Handle Loot Crate Opening
@@ -200,14 +240,26 @@
       const prizeArea = document.getElementById('prizeArea');
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
+      const prizeSlider = document.getElementById('prizeSlider');
       prizeArea.style.display = 'none';
 
+      // Add all prizes to the prizeSlider
+      prizeSlider.innerHTML = '';
+      const prizes = crates[type];
+      prizes.forEach(prize => {
+        const img = document.createElement('img');
+        img.src = prize.img;
+        img.alt = prize.name;
+        prizeSlider.appendChild(img);
+      });
+
       setTimeout(() => {
-        const prize = crates[type][Math.floor(Math.random() * crates[type].length)];
+        const prize = prizes[Math.floor(Math.random() * prizes.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         prizeArea.style.display = 'block';
 
+        // Store the prize in localStorage (inventory)
         let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
         inventory.push(prize);
         localStorage.setItem('inventory', JSON.stringify(inventory));
