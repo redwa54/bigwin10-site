@@ -112,6 +112,17 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
+
+    /* Arrow for indicating winning prize */
+    .arrow {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #ff4c00;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -155,6 +166,7 @@
     </div>
     <h2 id="prizeText">🎉 You won a prize!</h2>
     <img id="prizeImage" src="" alt="Prize" />
+    <div class="arrow" id="prizeArrow">⬇️</div> <!-- Arrow to indicate winning prize -->
   </div>
 
   <!-- Links to Other Pages -->
@@ -241,7 +253,9 @@
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
       const prizeSlider = document.getElementById('prizeSlider');
+      const prizeArrow = document.getElementById('prizeArrow');
       prizeArea.style.display = 'none';
+      prizeArrow.style.display = 'none';
 
       // Add all prizes to the prizeSlider
       prizeSlider.innerHTML = '';
@@ -254,6 +268,8 @@
       });
 
       setTimeout(() => {
+        prizeArrow.style.display = 'block';
+
         const prize = prizes[Math.floor(Math.random() * prizes.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
