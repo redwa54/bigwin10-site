@@ -21,6 +21,20 @@
       padding: 20px;
       font-size: 2rem;
       color: #ff4c00;
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .login-link {
+      font-size: 1rem;
+      color: #ff4c00;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .login-link:hover {
+      color: #ff2a00;
     }
     .box-selection {
       display: flex;
@@ -77,52 +91,16 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    /* Additional Styles for Inventory and User */
-    .inventory {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 1.2rem;
-    }
-    .inventory p {
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-    .inventory-items {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .inventory-item {
-      width: 100px;
-      margin: 10px;
-      text-align: center;
-    }
-    .inventory-item img {
-      width: 100%;
-      border-radius: 8px;
-    }
-
-    .button-container {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .button-container button {
-      background: #ff4c00;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    .button-container button:hover {
-      background: #ff2a00;
-    }
   </style>
 </head>
 <body>
-  <header>Loot Crates</header>
+  <header>
+    <div>Loot Crates</div>
+    <div>
+      <span id="userBalance">User: Not logged in | Balance: 0</span>
+      <a href="login.html" class="login-link" id="loginLink">Login</a>
+    </div>
+  </header>
 
   <!-- Loot Boxes -->
   <div class="box-selection">
@@ -140,12 +118,6 @@
     </div>
   </div>
 
-  <!-- Inventory Section -->
-  <div class="inventory" id="inventoryArea">
-    <h3>Your Inventory:</h3>
-    <div id="inventoryItems" class="inventory-items"></div>
-  </div>
-
   <!-- Links to Other Pages -->
   <div class="link-container">
     <a href="wallet.html">Deposit/Withdraw</a>
@@ -161,9 +133,7 @@
   <!-- Sound Effects -->
   <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
 
-  <!-- JavaScript -->
   <script>
-    // Crates and Prizes
     const crates = {
       iphone: [
         { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg" },
@@ -192,38 +162,35 @@
       ]
     };
 
-    // Open Crate and Show Prize
     function openCrate(type) {
       const prizeArea = document.getElementById('prizeArea');
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
       const list = crates[type];
-      // Show prize area
+      // show prize area
       prizeArea.style.display = 'block';
-      // Simulate spin
+      // simulate spin
       setTimeout(() => {
         const prize = list[Math.floor(Math.random() * list.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         document.getElementById('sound-common').play();
-
-        // Add the prize to the user's inventory
-        addToInventory(prize);
       }, 2000);
     }
 
-    // Add prize to inventory
-    function addToInventory(prize) {
-      const inventoryItems = document.getElementById('inventoryItems');
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('inventory-item');
-      const itemImage = document.createElement('img');
-      itemImage.src = prize.img;
-      const itemName = document.createElement('p');
-      itemName.innerText = prize.name;
-      itemDiv.appendChild(itemImage);
-      itemDiv.appendChild(itemName);
-      inventoryItems.appendChild(itemDiv);
+    // Check for logged-in user
+    window.onload = function() {
+      const user = localStorage.getItem('username');
+      const balance = localStorage.getItem('balance') || 0;
+
+      if (user) {
+        // If logged in, show user info and hide login link
+        document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
+        document.getElementById('loginLink').style.display = 'none';
+      } else {
+        // If not logged in, show login link
+        document.getElementById('loginLink').style.display = 'inline';
+      }
     }
   </script>
 </body>
