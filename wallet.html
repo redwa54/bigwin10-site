@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Wallet - Deposit</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode"></script> <!-- QR Code library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script> <!-- Ensure correct QR Code library -->
   <style>
     body {
       font-family: 'Orbitron', sans-serif;
@@ -71,6 +71,9 @@
     }
     .qr-code {
       margin-top: 10px;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .history {
       margin-top: 30px;
@@ -177,8 +180,12 @@
     function generateQRCode() {
       const walletAddress = document.getElementById('walletAddress').innerText;
       const qrCodeContainer = document.getElementById('qrCode');
-      QRCode.toCanvas(qrCodeContainer, walletAddress, function (error) {
-        if (error) console.error(error);
+      QRCode.toDataURL(walletAddress, function (error, url) {
+        if (error) {
+          console.error(error);
+        } else {
+          qrCodeContainer.innerHTML = `<img src="${url}" alt="QR Code" />`;
+        }
       });
     }
 
