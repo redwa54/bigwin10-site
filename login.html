@@ -14,21 +14,16 @@
     }
     h1 {
       color: #ff4c00;
+      margin-bottom: 20px;
     }
-    .form-section {
-      margin: 30px auto;
-      max-width: 300px;
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 15px;
-      border: 2px solid #ff4c00;
-    }
-    input[type="text"], input[type="password"] {
+    input {
       width: 80%;
       padding: 10px;
       margin: 10px 0;
       border-radius: 10px;
       border: none;
+      background: #1e1e1e;
+      color: white;
     }
     button {
       background: #ff4c00;
@@ -49,47 +44,51 @@
 <body>
 
   <h1>Login</h1>
+  
+  <input type="text" id="username" placeholder="Username"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
 
-  <div class="form-section">
-    <input type="text" id="username" placeholder="Username"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="login()">Login</button>
-    <div id="errorMessage" class="error"></div>
-  </div>
+  <div class="error" id="errorMsg"></div>
 
   <script>
+    // 🔥 Check if already logged in
+    window.onload = function() {
+      const savedUsername = localStorage.getItem('username');
+      if (savedUsername) {
+        window.location.href = 'index.html'; // Already logged in, skip login page
+      }
+    }
+
     async function login() {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
-      const errorMessage = document.getElementById('errorMessage');
-      errorMessage.innerText = '';
+      const errorMsg = document.getElementById('errorMsg');
 
       if (!username || !password) {
-        errorMessage.innerText = 'Please fill in all fields.';
+        errorMsg.innerText = "Please fill in all fields!";
         return;
       }
 
       try {
-        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:lP_w43UZ/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password })
+        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:lP_w43UZ/users_2', {
+          method: 'GET'
         });
 
         const data = await response.json();
 
-        if (response.ok) {
-          localStorage.setItem('authToken', data.authToken); // Save the authToken
+        const user = data.find(u => u.username === username && u.password === password);
+
+        if (user) {
           alert('Login successful!');
-          window.location.href = 'index.html'; // Redirect to home page (change if needed)
+          localStorage.setItem('username', username); // 🔥 Save username to localStorage
+          window.location.href = 'index.html'; // Redirect after login
         } else {
-          errorMessage.innerText = data.message || 'Login failed. Check your credentials.';
+          errorMsg.innerText = "Username or password incorrect!";
         }
       } catch (error) {
-        console.error('Error logging in:', error);
-        errorMessage.innerText = 'Server error. Please try again later.';
+        console.error('Login error:', error);
+        errorMsg.innerText = "Something went wrong. Try again.";
       }
     }
   </script>
