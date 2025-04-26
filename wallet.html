@@ -1,109 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deposit/Withdraw</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>Wallet - Deposit & Withdraw</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Orbitron', sans-serif;
       background: #121212;
       color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
+      text-align: center;
+      padding: 40px;
     }
-    header {
-      padding: 20px;
-      font-size: 2rem;
+    h1 {
       color: #ff4c00;
+      margin-bottom: 20px;
     }
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
+    .balance {
+      margin: 20px 0;
+      font-size: 1.2rem;
     }
-    input {
+    .form-section {
+      margin: 30px auto;
+      max-width: 300px;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #ff4c00;
+    }
+    input[type="number"] {
+      width: 80%;
       padding: 10px;
-      margin: 10px;
-      background: #333;
-      border: 1px solid #ff4c00;
-      color: #fff;
-      font-size: 1rem;
+      margin: 10px 0;
       border-radius: 10px;
+      border: none;
     }
     button {
       background: #ff4c00;
-      border: none;
       color: #fff;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border-radius: 10px;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      border-radius: 10px;
+      font-size: 1rem;
     }
-    button:hover {
-      background: #ff2a00;
-    }
-    .link-container {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .link-container a {
+    a {
       color: #ff4c00;
-      font-size: 1.2rem;
+      display: inline-block;
+      margin-top: 20px;
       text-decoration: none;
-      margin: 10px;
-    }
-    .link-container a:hover {
-      color: #ff2a00;
     }
   </style>
 </head>
 <body>
-  <header>Deposit/Withdraw</header>
+  <h1>Wallet</h1>
+  <div class="balance" id="balanceDisplay">Balance: 0</div>
 
-  <div class="form-container">
-    <input type="number" id="depositAmount" placeholder="Amount to Deposit" />
-    <button onclick="depositCredits()">Deposit</button>
-
-    <input type="number" id="withdrawAmount" placeholder="Amount to Withdraw" />
-    <button onclick="withdrawCredits()">Withdraw</button>
+  <div class="form-section">
+    <h3>Deposit Credits</h3>
+    <input type="number" id="depositAmount" placeholder="Amount to deposit">
+    <button onclick="deposit()">Deposit</button>
   </div>
 
-  <div class="link-container">
-    <a href="index.html">Back to Loot Crates</a>
+  <div class="form-section">
+    <h3>Withdraw Credits</h3>
+    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
+    <button onclick="withdraw()">Withdraw</button>
   </div>
+
+  <a href="index.html">← Back to Crates</a>
 
   <script>
-    let userBalance = 100; // Starting balance
-
-    // Deposit function
-    function depositCredits() {
-      const depositAmount = document.getElementById("depositAmount").value;
-      if (depositAmount <= 0) {
-        alert("Please enter a valid amount to deposit!");
-        return;
-      }
-      userBalance += parseInt(depositAmount);
-      alert("Deposited: " + depositAmount + " Credits. New balance: " + userBalance);
+    function updateDisplay() {
+      const balance = parseInt(localStorage.getItem('balance') || '0');
+      document.getElementById('balanceDisplay').innerText = `Balance: ${balance}`;
     }
 
-    // Withdraw function
-    function withdrawCredits() {
-      const withdrawAmount = document.getElementById("withdrawAmount").value;
-      if (withdrawAmount <= 0 || withdrawAmount > userBalance) {
-        alert("Invalid amount or insufficient balance!");
+    function deposit() {
+      const amount = parseInt(document.getElementById('depositAmount').value);
+      if (isNaN(amount) || amount <= 0) {
+        alert('Enter a valid deposit amount');
         return;
       }
-      userBalance -= parseInt(withdrawAmount);
-      alert("Withdrawn: " + withdrawAmount + " Credits. New balance: " + userBalance);
+
+      let balance = parseInt(localStorage.getItem('balance') || '0');
+      balance += amount;
+      localStorage.setItem('balance', balance);
+      updateDisplay();
+      alert(`Deposited ${amount} credits!`);
     }
+
+    function withdraw() {
+      const amount = parseInt(document.getElementById('withdrawAmount').value);
+      if (isNaN(amount) || amount <= 0) {
+        alert('Enter a valid withdrawal amount');
+        return;
+      }
+
+      let balance = parseInt(localStorage.getItem('balance') || '0');
+      if (amount > balance) {
+        alert('Not enough credits to withdraw');
+        return;
+      }
+
+      balance -= amount;
+      localStorage.setItem('balance', balance);
+      updateDisplay();
+      alert(`Withdrew ${amount} credits.`);
+    }
+
+    window.onload = updateDisplay;
   </script>
 </body>
 </html>
