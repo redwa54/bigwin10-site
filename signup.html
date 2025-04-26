@@ -59,6 +59,9 @@
       const confirmPassword = document.getElementById('confirmPassword').value.trim();
       const errorMsg = document.getElementById('errorMsg');
 
+      // Clear previous error
+      errorMsg.innerText = "";
+
       // Validate inputs
       if (!username || !password || !confirmPassword) {
         errorMsg.innerText = "Please fill in all fields!";
@@ -71,14 +74,14 @@
       }
 
       try {
-        // Create a new user object to send to Xano
+        // Create a new user object
         const newUser = {
           username: username,
           password: password
         };
 
-        // Send POST request to Xano API to create the user
-        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:lP_w43UZ/users_2', {
+        // Send POST request to Xano API (corrected endpoint)
+        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:mjfQ2ZPk/sign_up', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -86,16 +89,18 @@
           body: JSON.stringify(newUser)
         });
 
+        const data = await response.json();
+
         if (response.ok) {
           alert('Account created successfully! Please log in.');
-          window.location.href = 'login.html'; // Redirect to login page after successful sign up
+          window.location.href = 'login.html'; // Redirect to login page
         } else {
-          const data = await response.json();
-          errorMsg.innerText = data.message || 'Something went wrong. Try again.';
+          // Show specific error message from Xano if available
+          errorMsg.innerText = data.message || "Something went wrong. Try again.";
         }
       } catch (error) {
         console.error('Error signing up:', error);
-        errorMsg.innerText = "Something went wrong. Try again.";
+        errorMsg.innerText = "Network error. Please try again.";
       }
     }
   </script>
