@@ -1,102 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claim Your Prize</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: white;
-      padding: 20px;
+      background: #121212;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
     }
-    .form-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #222;
-      padding: 20px;
-      border-radius: 10px;
-      border: 2px solid #ff4c00;
+    h1 {
+      color: #ff4c00;
+      margin-bottom: 20px;
     }
-    input, button {
-      width: 100%;
+    form {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 15px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 0 10px rgba(255, 76, 0, 0.5);
+    }
+    input[type="text"], input[type="email"] {
       padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
       border: none;
-      background-color: #333;
-      color: white;
+      border-radius: 8px;
+      font-size: 1rem;
     }
     button {
-      background-color: #ff4c00;
+      background: #ff4c00;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
     }
     button:hover {
-      background-color: #ff2a00;
-    }
-    .error {
-      color: red;
-      font-size: 1.1rem;
+      background: #e03e00;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Enter Your Shipping Information</h2>
-    <form id="shippingForm">
-      <input type="text" id="name" placeholder="Full Name" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="text" id="address" placeholder="Shipping Address" required />
-      <input type="text" id="city" placeholder="City" required />
-      <input type="text" id="state" placeholder="State" required />
-      <input type="text" id="zip" placeholder="ZIP Code" required />
-      <button type="submit">Claim Prize</button>
-    </form>
-    <p id="errorMessage" class="error"></p>
-    <p id="successMessage"></p>
-  </div>
 
-  <script>
-    const form = document.getElementById('shippingForm');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
+<h1>Claim Your Prize</h1>
 
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
+<form id="claimForm">
+  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="email" name="email" placeholder="Your Email" required>
+  <input type="text" name="address" placeholder="Address" required>
+  <input type="text" name="city" placeholder="City" required>
+  <input type="text" name="state" placeholder="State" required>
+  <input type="text" name="zip" placeholder="ZIP Code" required>
+  <button type="submit">Submit Claim</button>
+</form>
 
-      const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        address: document.getElementById('address').value,
-        city: document.getElementById('city').value,
-        state: document.getElementById('state').value,
-        zip: document.getElementById('zip').value
-      };
+<script>
+document.getElementById('claimForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-      try {
-        const response = await fetch('https://your-xano-endpoint-url/submit-shipping-info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
+  const formData = new FormData(this);
+  const data = {};
+  formData.forEach((value, key) => data[key] = value);
 
-        const data = await response.json();
-
-        if (data.success) {
-          successMessage.innerText = '🎉 Your prize has been claimed! Check your email for shipping details!';
-          errorMessage.innerText = '';
-        } else {
-          successMessage.innerText = '';
-          errorMessage.innerText = 'There was an error submitting your information. Please try again.';
-        }
-      } catch (error) {
-        successMessage.innerText = '';
-        errorMessage.innerText = 'Error: Unable to submit the form. Please try again.';
-      }
+  try {
+    const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:qYhAxRGh/claims', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     });
-  </script>
+
+    if (response.ok) {
+      alert('🎉 Claim submitted successfully!');
+      document.getElementById('claimForm').reset();
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error submitting claim.');
+  }
+});
+</script>
+
 </body>
 </html>
