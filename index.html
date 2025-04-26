@@ -6,8 +6,14 @@
   <title>Loot Crates</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
-    body {
+    /* General Reset */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Orbitron', sans-serif;
       background: #121212;
       color: #fff;
@@ -16,54 +22,80 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
     }
+
     header {
+      width: 100%;
       padding: 20px;
       font-size: 2rem;
       color: #ff4c00;
-      position: relative;
-      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      background: rgba(18, 18, 18, 0.8);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
+
     .user-info {
       font-size: 1rem;
     }
+
     .logout-button {
       margin-left: 10px;
       color: #ff4c00;
       cursor: pointer;
       text-decoration: underline;
     }
+
     .box-selection {
       display: flex;
       gap: 20px;
-      margin: 20px 0;
+      margin-top: 120px;
+      margin-bottom: 30px;
       flex-wrap: wrap;
       justify-content: center;
+      animation: fadeIn 1s ease-in-out;
     }
+
     .loot-box {
       background: #1e1e1e;
       padding: 20px;
       border-radius: 20px;
       border: 2px solid #ff4c00;
       cursor: pointer;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
       text-align: center;
       width: 160px;
+      margin: 20px;
     }
+
     .loot-box:hover {
-      transform: scale(1.03);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(255, 76, 0, 0.6);
     }
+
     .loot-box img {
       width: 100px;
       margin-top: 10px;
+      transition: transform 0.3s;
     }
+
+    .loot-box:hover img {
+      transform: scale(1.1);
+    }
+
     .link-container {
-      margin-top: 30px;
+      margin-top: 50px;
       text-align: center;
+      width: 100%;
     }
+
     .link-container a {
       color: #ff4c00;
       font-size: 1.2rem;
@@ -71,12 +103,69 @@
       margin: 0 10px;
       transition: color 0.3s;
     }
+
     .link-container a:hover {
       color: #ff2a00;
+    }
+
+    /* Background animation */
+    .bg-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #ff4c00, #ff2a00, #ff4c00);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      z-index: -1;
+    }
+
+    /* Countdown Timer */
+    .countdown-timer {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 1.5rem;
+      color: #ff4c00;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    /* Animation Effects */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
   </style>
 </head>
 <body>
+
+  <div class="bg-animation"></div>
+
+  <!-- Countdown Timer -->
+  <div class="countdown-timer" id="countdown"></div>
+
   <header>
     <div><a href="index.html" style="color: #ff4c00;">Loot Crates</a></div>
     <div class="user-info">
@@ -110,6 +199,20 @@
   </div>
 
   <script>
+    // Countdown Timer Functionality
+    function startCountdown() {
+      const endDate = new Date(new Date().getTime() + 60 * 60 * 1000); // Countdown to 1 hour from now
+      const countdownElement = document.getElementById('countdown');
+      setInterval(() => {
+        const now = new Date();
+        const timeLeft = endDate - now;
+        const minutes = Math.floor(timeLeft / 1000 / 60);
+        const seconds = Math.floor((timeLeft / 1000) % 60);
+        countdownElement.innerText = `${minutes}m ${seconds}s`;
+      }, 1000);
+    }
+    startCountdown();
+
     // Handle User Login and Balance
     window.onload = function() {
       const user = localStorage.getItem('username');
@@ -129,5 +232,6 @@
       window.location.reload();
     });
   </script>
+
 </body>
 </html>
