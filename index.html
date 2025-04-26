@@ -1,230 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BigWin10 Loot Crate</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>BigWin10 Loot Crates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
   <style>
+    /* Global */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: url('images/background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
+      background: #111;
+      color: #eee;
       overflow-x: hidden;
     }
-    header {
-      padding: 20px;
-      font-size: 2.5rem;
-      color: #ff4c00;
-      text-shadow: 0 0 10px rgba(255,76,0,0.7);
-    }
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px;
-      text-align: center;
-      z-index: 10;
-    }
-    nav a {
-      color: #ff4c00;
-      font-size: 1.2rem;
-      margin: 0 20px;
-      text-decoration: none;
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-    nav a:hover {
-      color: #fff;
-      transform: scale(1.1);
-    }
-    .balance-bar {
-      background: rgba(0,0,0,0.6);
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin-top: 80px;
-      font-size: 1.2rem;
-    }
-    .box-selection {
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* Header and Nav */
+    header { background: #000;
+      padding: 15px 40px;
       display: flex;
-      gap: 30px;
-      margin: 40px 0;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%; z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+    header .logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: #f04e23; }
+    nav a { margin-left: 20px; font-weight: 600; transition: color .3s; }
+    nav a:hover { color: #f04e23; }
+
+    /* Hero Section */
+    .hero {
+      height: 80vh;
+      background: url('images/hero-bg.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      width: 90%;
-      max-width: 1200px;
+      text-align: center;
+      padding: 0 20px;
     }
-    .loot-box {
-      background: rgba(30,30,30,0.8);
-      padding: 20px;
-      border-radius: 20px;
-      border: 2px solid #ff4c00;
+    .hero::after {
+      content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+    .hero-content { position: relative; z-index:2; max-width:700px; }
+    .hero h1 { font-family: 'Orbitron', sans-serif; font-size: 3rem; margin-bottom: 20px; color: #f04e23; }
+    .hero p { font-size: 1.2rem; margin-bottom: 30px; }
+    .hero button { background: #f04e23; color: #fff; border: none;
+      padding: 15px 30px; font-size: 1.1rem; font-weight:600;
+      border-radius: 5px; cursor: pointer; transition: background .3s;
+    }
+    .hero button:hover { background: #d7431f; }
+
+    /* Crates Grid */
+    .crates { padding: 60px 20px; max-width:1200px; margin:0 auto; }
+    .crates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap: 30px;
+    }
+    .crate-card {
+      background: #1e1e1e; border-radius: 10px;
+      overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: transform .3s, box-shadow .3s;
+      text-align: center;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: center;
-      width: 200px;
     }
-    .loot-box:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(255, 76, 0, 0.8);
+    .crate-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.7);
     }
-    .loot-box img {
-      width: 120px;
-      animation: pulse 2s infinite ease-in-out;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    /* Spinning Animation */
-    @keyframes spinAnimation {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
-    }
-    .loot-box.spinning {
-      animation: spinAnimation 3s ease-in-out;
-    }
-    .prize {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 1.5rem;
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    .prize img {
-      max-width: 300px;
-      margin: 20px 0;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #ff4c00;
-    }
-    .rolling {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      animation: flash 1s infinite;
-    }
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    html { scroll-behavior: smooth; }
+    .crate-card img { width:100%; height:150px; object-fit:cover; }
+    .crate-card p { padding: 15px; font-weight:600; }
+
+    /* Spin Animation */
+    @keyframes spinAnimation { 0%{transform:rotateY(0deg);} 100%{transform:rotateY(360deg);} }
+    .spinning { animation: spinAnimation 3s ease-in-out; }
+
+    /* Prize Reveal */
+    .prize-area { display:none; padding:40px 20px; text-align:center; }
+    .prize-area .title { font-size:1.5rem; margin-bottom:20px; }
+    .prize-area img { width:200px; border-radius:10px; box-shadow:0 0 20px #f04e23; }
+
+    /* Footer spacing */
+    footer { height:40px; }
   </style>
 </head>
 <body>
-  <header>BigWin10 Crates</header>
-  <nav>
-    <a href="#crate-iphone">iPhone Crate</a>
-    <a href="#crate-gaming">Gaming Crate</a>
-    <a href="#crate-random">Random Crate</a>
-  </nav>
+  <header>
+    <div class="logo">BigWin10</div>
+    <nav>
+      <a href="#iphone">iPhone Crate</a>
+      <a href="#gaming">Gaming Crate</a>
+      <a href="#random">Random Crate</a>
+    </nav>
+  </header>
 
-  <div class="balance-bar" id="balanceBar">Balance: 1000 Credits</div>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Unlock Epic Tech Prizes!</h1>
+      <p>Choose a crate, spin the box, and win real-world gadgets.</p>
+      <button onclick="scrollToCrates()">Start Spinning</button>
+    </div>
+  </section>
 
-  <div class="box-selection">
-    <div class="loot-box" id="crate-iphone" onclick="openCrate('iphone', this)">
-      <p>iPhone Crate</p>
-      <img src="images/crate-icon.png" alt="iPhone Crate" />
+  <section class="crates" id="crates">
+    <div class="crates-grid">
+      <div class="crate-card" id="iphone" onclick="openCrate('iphone', this)">
+        <img src="images/iphone-crate.jpg" alt="iPhone Crate">
+        <p>iPhone Crate</p>
+      </div>
+      <div class="crate-card" id="gaming" onclick="openCrate('gaming', this)">
+        <img src="images/gaming-crate.jpg" alt="Gaming Crate">
+        <p>Gaming Crate</p>
+      </div>
+      <div class="crate-card" id="random" onclick="openCrate('random', this)">
+        <img src="images/random-crate.jpg" alt="Random Crate">
+        <p>Random Crate</p>
+      </div>
     </div>
-    <div class="loot-box" id="crate-gaming" onclick="openCrate('gaming', this)">
-      <p>Gaming Crate</p>
-      <img src="images/crate-icon.png" alt="Gaming Crate" />
-    </div>
-    <div class="loot-box" id="crate-random" onclick="openCrate('random', this)">
-      <p>Random Crate</p>
-      <img src="images/crate-icon.png" alt="Random Crate" />
-    </div>
-  </div>
+  </section>
 
-  <div class="prize" id="prizeArea">
-    <p class="rolling" id="rollingText">🎲 Rolling...</p>
-    <p id="prizeText">🎉 You won an iPhone 15 Pro!</p>
-    <img src="images/iphone-15-pro.jpg" alt="Prize" id="prizeImage" />
-  </div>
+  <section class="prize-area" id="prizeArea">
+    <div class="title" id="prizeText">🎉 You won a Prize!</div>
+    <img id="prizeImage" src="" alt="Prize">
+  </section>
 
   <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
   <audio id="sound-rare" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c7924c2a53.mp3?filename=win-notification-129485.mp3"></audio>
   <audio id="sound-legendary" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9d38d28b0.mp3?filename=success-1-6297.mp3"></audio>
 
   <script>
-    const balanceBar = document.getElementById("balanceBar");
-    let userBalance = 1000;
-
     const crates = {
       iphone: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
-        { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" }
+        {name:'iPhone 15 Pro',img:'images/iphone-15-pro.jpg',rarity:'legendary'},
+        {name:'iPhone 14',img:'images/iphone-14.jpg',rarity:'rare'},
+        {name:'iPhone Case',img:'images/iphone-case.jpg',rarity:'common'}
       ],
       gaming: [
-        { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" }
+        {name:'PS5 Console',img:'images/ps5-console.jpg',rarity:'legendary'},
+        {name:'PS5 Controller',img:'images/ps5-controller.jpg',rarity:'rare'},
+        {name:'Gaming Mouse',img:'images/gaming-mouse.jpg',rarity:'common'}
       ],
       random: [
-        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", rarity: "legendary" },
-        { name: "Smart Watch", img: "images/smart-watch.jpg", rarity: "rare" },
-        { name: "Sticker Pack", img: "images/sticker-pack.jpg", rarity: "common" },
-        { name: "VR Headset", img: "images/vr-headset.jpg", rarity: "rare" },
-        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg", rarity: "common" },
-        { name: "Gaming Chair", img: "images/gaming-chair.jpg", rarity: "rare" },
-        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg", rarity: "common" },
-        { name: "Drone", img: "images/drone.jpg", rarity: "legendary" },
-        { name: "Portable SSD", img: "images/portable-ssd.jpg", rarity: "rare" },
-        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg", rarity: "common" },
-        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg", rarity: "rare" },
-        { name: "Monitor", img: "images/monitor.jpg", rarity: "legendary" },
-        { name: "Webcam", img: "images/webcam.jpg", rarity: "common" }
+        {name:'Mystery Gold Bar',img:'images/mystery-gold-bar.jpg',rarity:'legendary'},
+        {name:'Smart Watch',img:'images/smart-watch.jpg',rarity:'rare'},
+        {name:'Sticker Pack',img:'images/sticker-pack.jpg',rarity:'common'},
+        {name:'VR Headset',img:'images/vr-headset.jpg',rarity:'rare'},
+        {name:'Bluetooth Speaker',img:'images/bluetooth-speaker.jpg',rarity:'common'},
+        {name:'Gaming Chair',img:'images/gaming-chair.jpg',rarity:'rare'},
+        {name:'Mechanical Keyboard',img:'images/mechanical-keyboard.jpg',rarity:'common'},
+        {name:'Drone',img:'images/drone.jpg',rarity:'legendary'},
+        {name:'Portable SSD',img:'images/portable-ssd.jpg',rarity:'rare'},
+        {name:'LED Strip Lights',img:'images/led-strip-lights.jpg',rarity:'common'},
+        {name:'Wireless Earbuds',img:'images/wireless-earbuds.jpg',rarity:'rare'},
+        {name:'Monitor',img:'images/monitor.jpg',rarity:'legendary'},
+        {name:'Webcam',img:'images/webcam.jpg',rarity:'common'}
       ]
     };
-
+    let userBalance = 1000;
+    const balanceBar = document.getElementById('balanceBar');
     const raritySounds = {
-      common: document.getElementById("sound-common"),
-      rare: document.getElementById("sound-rare"),
-      legendary: document.getElementById("sound-legendary"),
+      common: document.getElementById('sound-common'),
+      rare: document.getElementById('sound-rare'),
+      legendary: document.getElementById('sound-legendary')
     };
-
-    function openCrate(type, element) {
-      if (userBalance < 100) {
-        alert("Not enough credits!");
-        return;
-      }
-
-      userBalance -= 100;
-      balanceBar.innerText = `Balance: ${userBalance} Credits`;
-
-      const prizeArea = document.getElementById("prizeArea");
-      const prizeText = document.getElementById("prizeText");
-      const prizeImage = document.getElementById("prizeImage");
-      const rollingText = document.getElementById("rollingText");
-
-      // start spin
+    function scrollToCrates(){ document.getElementById('crates').scrollIntoView({behavior:'smooth'}); }
+    function openCrate(type, element){
+      if(userBalance<100){ alert('Not enough credits!'); return; }
+      userBalance -=100;
+      balanceBar.innerText = 'Balance: '+userBalance+' Credits';
+      const list=crates[type];
+      const prize=list[Math.floor(Math.random()*list.length)];
       element.classList.add('spinning');
-      prizeArea.style.display = "block";
-      rollingText.style.display = "block";
-      prizeText.style.display = "none";
-      prizeImage.style.display = "none";
-
-      const prizeList = crates[type];
-      const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
-
-      setTimeout(() => {
-        element.classList.remove('spinning');
-        rollingText.style.display = "none";
-        prizeText.innerText = `🎉 You won a ${prize.name}!`;
-        prizeImage.src = prize.img;
-        prizeText.style.display = "block";
-        prizeImage.style.display = "block";
+      setTimeout(()=>{ element.classList.remove('spinning');
+        document.getElementById('prizeText').innerText='🎉 You won a '+prize.name+'!';
+        document.getElementById('prizeImage').src=prize.img;
+        document.getElementById('prizeArea').style.display='block';
         raritySounds[prize.rarity].play();
-      }, 3000);
+      },3000);
     }
   </script>
 </body>
