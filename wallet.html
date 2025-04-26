@@ -51,6 +51,16 @@
       margin-top: 20px;
       text-decoration: none;
     }
+    .wallet-info {
+      margin-top: 20px;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #ff4c00;
+    }
+    .wallet-info p {
+      margin: 10px 0;
+    }
     .history {
       margin-top: 30px;
       padding: 20px;
@@ -69,7 +79,19 @@
 
   <div class="form-section">
     <h3>Deposit Credits</h3>
-    <input type="number" id="depositAmount" placeholder="Amount to deposit">
+    <input type="number" id="depositAmount" placeholder="Amount to deposit" oninput="updateBTC()">
+    
+    <!-- Bitcoin Wallet Info placed here -->
+    <div class="wallet-info">
+      <h3>Bitcoin Deposit Info</h3>
+      <p>To deposit Bitcoin, send the required amount to the following address:</p>
+      <p><strong>Bitcoin Wallet Address:</strong> 1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</p>
+      <p><strong>Important:</strong> Please include your username in the payment notes for faster processing!</p>
+      <p>After your payment is confirmed, your balance will be updated within 5-10 minutes.</p>
+    </div>
+    
+    <p id="btcEquivalent">BTC Equivalent: 0</p>
+
     <button onclick="deposit()">Deposit</button>
   </div>
 
@@ -80,19 +102,26 @@
     </div>
   </div>
 
-  <div class="wallet-info">
-    <h3>Bitcoin Deposit Info</h3>
-    <p>To deposit Bitcoin, send the required amount to the following address:</p>
-    <p><strong>Bitcoin Wallet Address:</strong> 1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</p>
-    <p>After your payment is confirmed, your balance will be updated within 5-10 minutes.</p>
-  </div>
-
   <a href="index.html">← Back to Crates</a>
 
   <script>
+    const btcRate = 0.00001; // 1 credit = 0.00001 BTC
+    const usdToBtcRate = 0.00001; // 1 USD = 0.00001 BTC
+
     function updateDisplay() {
       const balance = parseInt(localStorage.getItem('balance') || '0');
       document.getElementById('balanceDisplay').innerText = `Balance: ${balance}`;
+    }
+
+    function updateBTC() {
+      const amount = parseInt(document.getElementById('depositAmount').value);
+      if (isNaN(amount) || amount <= 0) {
+        document.getElementById('btcEquivalent').innerText = `BTC Equivalent: 0`;
+        return;
+      }
+
+      const btcAmount = amount * btcRate; // Calculate BTC based on the deposit
+      document.getElementById('btcEquivalent').innerText = `BTC Equivalent: ${btcAmount.toFixed(8)}`;
     }
 
     function deposit() {
