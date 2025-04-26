@@ -58,9 +58,16 @@
       padding: 20px;
       border-radius: 15px;
       border: 2px solid #ff4c00;
+      word-wrap: break-word;
+      max-width: 100%;
     }
     .wallet-info p {
       margin: 10px 0;
+    }
+    .wallet-address {
+      font-size: 1.1rem;
+      word-break: break-all;
+      line-height: 1.5;
     }
     .qr-code {
       margin-top: 10px;
@@ -89,7 +96,9 @@
     <div class="wallet-info">
       <h3>Bitcoin Deposit Info</h3>
       <p>To deposit Bitcoin, send the required amount to the following address:</p>
-      <p><strong>Bitcoin Wallet Address:</strong> <span id="walletAddress">1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</span></p>
+      <div class="wallet-address" id="walletAddress">
+        1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo
+      </div>
       <p><strong>Important:</strong> Please include your username in the payment notes for faster processing!</p>
       <p>After your payment is confirmed, your balance will be updated within 5-10 minutes.</p>
       
