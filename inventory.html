@@ -16,97 +16,93 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
+      background: linear-gradient(135deg, #1b1b1b, #333);
     }
     header {
       padding: 20px;
       font-size: 2rem;
       color: #ff4c00;
-    }
-    .inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      width: 90%;
-      max-width: 1200px;
-      margin-top: 20px;
-    }
-    .item-card {
-      background: #1e1e1e;
-      padding: 15px;
-      border-radius: 15px;
-      border: 2px solid #ff4c00;
+      width: 100%;
       text-align: center;
+      position: relative;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
-    .item-card img {
-      width: 100px;
-      height: auto;
-      margin-bottom: 10px;
+    .loot-item {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 20px;
+      border: 2px solid #ff4c00;
+      margin: 20px;
+      text-align: center;
+      width: 200px;
+      box-shadow: 0 0 15px rgba(255, 76, 0, 0.4);
     }
-    .item-card button {
+    .loot-item img {
+      width: 120px;
+      margin-top: 10px;
+    }
+    button.claim-btn {
       background: #ff4c00;
-      border: none;
-      padding: 5px 10px;
       color: white;
-      cursor: pointer;
-      margin: 5px;
+      padding: 10px;
+      border: none;
       border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button.claim-btn:hover {
+      background: #ff2a00;
     }
   </style>
 </head>
 <body>
-  <header>My Inventory</header>
-  <div class="inventory-grid" id="inventoryContainer"></div>
+  <header>
+    <div><a href="index.html" style="color: #ff4c00;">Loot Crates</a></div>
+    <div class="user-info">
+      <span id="userBalance">User: Not logged in | Balance: 0</span>
+      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
+      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
+    </div>
+  </header>
+
+  <!-- Inventory Items -->
+  <div class="loot-item">
+    <p>PS5 Console</p>
+    <img src="images/ps5-console.jpg" alt="PS5 Console" />
+    <button class="claim-btn" onclick="window.location.href='claim-prize-form.html?prize=PS5 Console'">Claim Prize</button>
+  </div>
+
+  <div class="loot-item">
+    <p>iPhone 15 Pro</p>
+    <img src="images/iphone-15-pro.jpg" alt="iPhone 15 Pro" />
+    <button class="claim-btn" onclick="window.location.href='claim-prize-form.html?prize=iPhone 15 Pro'">Claim Prize</button>
+  </div>
+
+  <!-- Links to Other Pages -->
+  <div class="link-container">
+    <a href="wallet.html">Deposit/Withdraw</a>
+    <a href="index.html">Back to Crates</a>
+  </div>
 
   <script>
-    function loadInventory() {
-      const container = document.getElementById('inventoryContainer');
-      const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+    // Handle User Login and Balance
+    window.onload = function() {
+      const user = localStorage.getItem('username');
+      const balance = localStorage.getItem('balance') || 0;
 
-      container.innerHTML = '';
-
-      if (inventory.length === 0) {
-        container.innerHTML = '<p>No items in inventory.</p>';
-        return;
+      if (user) {
+        document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
+        document.getElementById('loginLink').style.display = 'none';
+        document.getElementById('logoutButton').style.display = 'inline';
       }
+    };
 
-      inventory.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}" />
-          <p>${item.name}</p>
-          <p>Value: ${item.value} credits</p>
-          <button onclick="collectItem(${index})">Collect</button>
-          <button onclick="cashInItem(${index}, ${item.value})">Cash In</button>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function collectItem(index) {
-      let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-      inventory.splice(index, 1);
-      localStorage.setItem('inventory', JSON.stringify(inventory));
-      alert('Item collected!');
-      loadInventory();
-    }
-
-    function cashInItem(index, value) {
-      let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-      inventory.splice(index, 1);
-      localStorage.setItem('inventory', JSON.stringify(inventory));
-
-      let balance = parseInt(localStorage.getItem('balance') || '0');
-      balance += value;
-      localStorage.setItem('balance', balance);
-
-      alert(`Cashed in for ${value} credits!`);
-      loadInventory();
-    }
-
-    loadInventory();
+    // Handle Logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('balance');
+      window.location.reload();
+    });
   </script>
 </body>
 </html>
