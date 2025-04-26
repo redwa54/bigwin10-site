@@ -130,6 +130,11 @@
       const winningIndex = Math.floor(Math.random() * prizes.length) + prizes.length * 4;
       const offset = winningIndex * prizeWidth;
 
+      // Reset animation
+      prizeContainer.style.transition = 'none';
+      prizeContainer.style.transform = 'translateX(0)';
+      void prizeContainer.offsetWidth; // Trigger reflow
+
       prizeContainer.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
       prizeContainer.style.transform = `translateX(-${offset}px)`;
 
