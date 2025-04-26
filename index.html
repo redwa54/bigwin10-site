@@ -78,40 +78,40 @@
       display: none;
       text-align: center;
       margin-top: 30px;
-      animation: fadeIn 1s ease-in-out;
     }
     .prize-area img {
       width: 150px;
       margin-top: 10px;
-      animation: popIn 0.5s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
     }
 
-    /* Spinning animation for prizes */
-    .prize-slider {
+    /* Centered Prize Slider */
+    .prize-slider-container {
       display: flex;
-      justify-content: center;  /* Center the images */
+      justify-content: center;
       overflow: hidden;
       width: 80%;
       margin: 0 auto;
       height: 80px;
       position: relative;
-      animation: spinPrize 3s ease-out forwards;
+    }
+
+    .prize-slider {
+      display: flex;
+      animation: spinPrize 5s ease-out infinite; /* Infinite loop */
+      white-space: nowrap;
     }
     .prize-slider img {
       height: 100%;
-      margin-right: 10px;
+      margin-right: 15px;
     }
     @keyframes spinPrize {
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
+    }
+
+    /* Winner highlight */
+    .winner {
+      border: 5px solid #ff4c00;
     }
   </style>
 </head>
@@ -151,8 +151,10 @@
 
   <!-- Prize Reveal -->
   <div id="prizeArea" class="prize-area">
-    <div id="prizeSlider" class="prize-slider">
-      <!-- Prizes will appear here dynamically -->
+    <div class="prize-slider-container">
+      <div id="prizeSlider" class="prize-slider">
+        <!-- Prizes will appear here dynamically -->
+      </div>
     </div>
     <h2 id="prizeText">🎉 You won a prize!</h2>
     <img id="prizeImage" src="" alt="Prize" />
@@ -255,12 +257,18 @@
         prizeSlider.appendChild(img);
       });
 
+      // Animate and stop on a prize after 5 seconds
       setTimeout(() => {
         const prize = prizes[Math.floor(Math.random() * prizes.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         prizeArea.style.display = 'block';
-      }, 3000); // After 3 seconds of spinning
+
+        // Highlight the winning prize
+        const allPrizes = prizeSlider.querySelectorAll('img');
+        allPrizes.forEach(img => img.classList.remove('winner')); // Remove previous highlights
+        allPrizes[prizes.indexOf(prize)].classList.add('winner'); // Add highlight to winning prize
+      }, 5000); // After 5 seconds of looping
     }
   </script>
 </body>
