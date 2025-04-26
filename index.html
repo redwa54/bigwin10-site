@@ -55,20 +55,6 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-    button {
-      background: #ff4c00;
-      border: none;
-      color: #fff;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 20px;
-    }
-    button:hover {
-      background: #ff2a00;
-    }
     .prize {
       margin-top: 30px;
       text-align: center;
@@ -99,15 +85,15 @@
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate</p>
-      <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
+      <img src="images/iphone-crate.png" alt="iPhone Crate" />
     </div>
     <div class="loot-box" onclick="openCrate('gaming')">
       <p>Gaming Crate</p>
-      <img src="images/ps5-console.jpg" alt="Gaming Crate" />
+      <img src="images/gaming-crate.png" alt="Gaming Crate" />
     </div>
     <div class="loot-box" onclick="openCrate('random')">
       <p>Random Crate</p>
-      <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
+      <img src="images/random-crate.png" alt="Random Crate" />
     </div>
   </div>
 
@@ -129,12 +115,12 @@
       iphone: [
         { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
         { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
+        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" }
       ],
       gaming: [
         { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
         { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" },
+        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" }
       ],
       random: [
         { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", rarity: "legendary" },
