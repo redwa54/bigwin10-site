@@ -9,43 +9,72 @@
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
-      background: #121212;
+      background: url('images/background.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
     }
     header {
       padding: 20px;
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: #ff4c00;
+      text-shadow: 0 0 10px rgba(255,76,0,0.7);
+      z-index: 10;
+    }
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      text-align: center;
+      z-index: 10;
+    }
+    nav a {
+      color: #ff4c00;
+      font-size: 1.2rem;
+      margin: 0 20px;
+      text-decoration: none;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    nav a:hover {
+      color: #fff;
+      transform: scale(1.1);
     }
     .balance-bar {
-      background: #222;
+      background: rgba(0,0,0,0.6);
       padding: 10px 20px;
       border-radius: 10px;
-      margin: 20px;
+      margin-top: 80px;
+      font-size: 1.2rem;
+      z-index: 10;
     }
     .box-selection {
       display: flex;
-      gap: 20px;
-      margin: 20px 0;
+      gap: 30px;
+      margin: 40px 0;
       flex-wrap: wrap;
       justify-content: center;
+      width: 90%;
+      max-width: 1200px;
+      transition: opacity 0.5s ease;
     }
     .loot-box {
-      background: #1e1e1e;
+      background: rgba(30,30,30,0.8);
       padding: 20px;
       border-radius: 20px;
       border: 2px solid #ff4c00;
       cursor: pointer;
-      transition: transform 0.3s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       text-align: center;
+      width: 200px;
     }
     .loot-box:hover {
-      transform: scale(1.03);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 76, 0, 0.8);
     }
     .loot-box img {
       width: 120px;
@@ -53,19 +82,20 @@
     }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.1); }
     }
     .prize {
       margin-top: 30px;
       text-align: center;
       font-size: 1.5rem;
       display: none;
+      animation: fadeIn 0.5s ease;
     }
     .prize img {
       max-width: 300px;
       margin: 20px 0;
       border-radius: 15px;
-      box-shadow: 0 0 15px #ff4c00;
+      box-shadow: 0 0 20px #ff4c00;
     }
     .rolling {
       font-size: 1.2rem;
@@ -74,26 +104,37 @@
     }
     @keyframes flash {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.3; }
     }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body>
   <header>BigWin10 Crates</header>
+  <nav>
+    <a href="#crate-iphone">iPhone Crate</a>
+    <a href="#crate-gaming">Gaming Crate</a>
+    <a href="#crate-random">Random Crate</a>
+  </nav>
+
   <div class="balance-bar" id="balanceBar">Balance: 1000 Credits</div>
 
   <div class="box-selection">
-    <div class="loot-box" onclick="openCrate('iphone')">
+    <div class="loot-box" id="crate-iphone" onclick="openCrate('iphone')">
       <p>iPhone Crate</p>
-      <img src="images/iphone-crate.png" alt="iPhone Crate" />
+      <img src="images/crate-icon.png" alt="iPhone Crate" />
     </div>
-    <div class="loot-box" onclick="openCrate('gaming')">
+    <div class="loot-box" id="crate-gaming" onclick="openCrate('gaming')">
       <p>Gaming Crate</p>
-      <img src="images/gaming-crate.png" alt="Gaming Crate" />
+      <img src="images/crate-icon.png" alt="Gaming Crate" />
     </div>
-    <div class="loot-box" onclick="openCrate('random')">
+    <div class="loot-box" id="crate-random" onclick="openCrate('random')">
       <p>Random Crate</p>
-      <img src="images/random-crate.png" alt="Random Crate" />
+      <img src="images/crate-icon.png" alt="Random Crate" />
     </div>
   </div>
 
@@ -123,6 +164,12 @@
         { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" }
       ],
       random: [
+        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
+        { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
+        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
+        { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
+        { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
+        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" },
         { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", rarity: "legendary" },
         { name: "Smart Watch", img: "images/smart-watch.jpg", rarity: "rare" },
         { name: "Sticker Pack", img: "images/sticker-pack.jpg", rarity: "common" },
