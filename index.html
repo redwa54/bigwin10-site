@@ -102,7 +102,7 @@
       margin: 0 auto;
       height: 80px;
       position: relative;
-      animation: spinPrize 3s linear infinite;
+      animation: spinPrize 3s ease-out forwards;
     }
     .prize-slider img {
       height: 100%;
@@ -113,16 +113,21 @@
       100% { transform: translateX(-100%); }
     }
 
-    /* Arrow for indicating winning prize */
-    .arrow {
+    /* Confetti animation */
+    .confetti {
       position: absolute;
-      bottom: -30px;
+      top: 0;
       left: 50%;
-      transform: translateX(-50%);
-      font-size: 2rem;
-      color: #ff4c00;
-      display: none;
+      width: 10px;
+      height: 10px;
+      background-color: #ff4c00;
+      animation: confettiFall 1.5s linear infinite;
     }
+    @keyframes confettiFall {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(100px) translateY(400px); }
+    }
+
   </style>
 </head>
 <body>
@@ -166,7 +171,6 @@
     </div>
     <h2 id="prizeText">🎉 You won a prize!</h2>
     <img id="prizeImage" src="" alt="Prize" />
-    <div class="arrow" id="prizeArrow">⬇️</div> <!-- Arrow to indicate winning prize -->
   </div>
 
   <!-- Links to Other Pages -->
@@ -176,6 +180,7 @@
     <a href="index.html">Refresh Crates</a>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/konami.js"></script>
   <script>
     // Handle User Login and Balance
     window.onload = function() {
@@ -253,9 +258,7 @@
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
       const prizeSlider = document.getElementById('prizeSlider');
-      const prizeArrow = document.getElementById('prizeArrow');
       prizeArea.style.display = 'none';
-      prizeArrow.style.display = 'none';
 
       // Add all prizes to the prizeSlider
       prizeSlider.innerHTML = '';
@@ -268,8 +271,6 @@
       });
 
       setTimeout(() => {
-        prizeArrow.style.display = 'block';
-
         const prize = prizes[Math.floor(Math.random() * prizes.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
@@ -279,7 +280,25 @@
         let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
         inventory.push(prize);
         localStorage.setItem('inventory', JSON.stringify(inventory));
-      }, 2000);
+
+        // Trigger confetti animation
+        triggerConfetti();
+      }, 3000); // After 3 seconds of spinning
+    }
+
+    // Confetti function
+    function triggerConfetti() {
+      for (let i = 0; i < 100; i++) {
+        let confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = `${Math.random() * 100}%`;
+        document.body.appendChild(confetti);
+
+        // Remove confetti after animation
+        setTimeout(() => {
+          confetti.remove();
+        }, 1500);
+      }
     }
   </script>
 </body>
