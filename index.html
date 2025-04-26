@@ -27,14 +27,14 @@
       justify-content: space-between;
       align-items: center;
     }
-    .login-link {
+    .user-info {
       font-size: 1rem;
-      color: #ff4c00;
-      text-decoration: none;
-      transition: color 0.3s;
     }
-    .login-link:hover {
-      color: #ff2a00;
+    .logout-button {
+      margin-left: 10px;
+      color: #ff4c00;
+      cursor: pointer;
+      text-decoration: underline;
     }
     .box-selection {
       display: flex;
@@ -96,9 +96,10 @@
 <body>
   <header>
     <div>Loot Crates</div>
-    <div>
+    <div class="user-info">
       <span id="userBalance">User: Not logged in | Balance: 0</span>
-      <a href="login.html" class="login-link" id="loginLink">Login</a>
+      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
+      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
     </div>
   </header>
 
@@ -121,6 +122,7 @@
   <!-- Links to Other Pages -->
   <div class="link-container">
     <a href="wallet.html">Deposit/Withdraw</a>
+    <a href="inventory.html">View Inventory</a>
     <a href="index.html">Refresh Crates</a>
   </div>
 
@@ -136,29 +138,29 @@
   <script>
     const crates = {
       iphone: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg" },
-        { name: "iPhone 14", img: "images/iphone-14.jpg" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg" }
+        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", value: 1500 },
+        { name: "iPhone 14", img: "images/iphone-14.jpg", value: 1200 },
+        { name: "iPhone Case", img: "images/iphone-case.jpg", value: 100 }
       ],
       gaming: [
-        { name: "PS5 Console", img: "images/ps5-console.jpg" },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg" }
+        { name: "PS5 Console", img: "images/ps5-console.jpg", value: 800 },
+        { name: "PS5 Controller", img: "images/ps5-controller.jpg", value: 250 },
+        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", value: 150 }
       ],
       random: [
-        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg" },
-        { name: "Smart Watch", img: "images/smart-watch.jpg" },
-        { name: "Sticker Pack", img: "images/sticker-pack.jpg" },
-        { name: "VR Headset", img: "images/vr-headset.jpg" },
-        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg" },
-        { name: "Gaming Chair", img: "images/gaming-chair.jpg" },
-        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg" },
-        { name: "Drone", img: "images/drone.jpg" },
-        { name: "Portable SSD", img: "images/portable-ssd.jpg" },
-        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg" },
-        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg" },
-        { name: "Monitor", img: "images/monitor.jpg" },
-        { name: "Webcam", img: "images/webcam.jpg" }
+        { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", value: 1000 },
+        { name: "Smart Watch", img: "images/smart-watch.jpg", value: 300 },
+        { name: "Sticker Pack", img: "images/sticker-pack.jpg", value: 20 },
+        { name: "VR Headset", img: "images/vr-headset.jpg", value: 500 },
+        { name: "Bluetooth Speaker", img: "images/bluetooth-speaker.jpg", value: 120 },
+        { name: "Gaming Chair", img: "images/gaming-chair.jpg", value: 400 },
+        { name: "Mechanical Keyboard", img: "images/mechanical-keyboard.jpg", value: 180 },
+        { name: "Drone", img: "images/drone.jpg", value: 700 },
+        { name: "Portable SSD", img: "images/portable-ssd.jpg", value: 150 },
+        { name: "LED Strip Lights", img: "images/led-strip-lights.jpg", value: 80 },
+        { name: "Wireless Earbuds", img: "images/wireless-earbuds.jpg", value: 100 },
+        { name: "Monitor", img: "images/monitor.jpg", value: 300 },
+        { name: "Webcam", img: "images/webcam.jpg", value: 90 }
       ]
     };
 
@@ -167,31 +169,35 @@
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
       const list = crates[type];
-      // show prize area
       prizeArea.style.display = 'block';
-      // simulate spin
       setTimeout(() => {
         const prize = list[Math.floor(Math.random() * list.length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         document.getElementById('sound-common').play();
+
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        inventory.push(prize);
+        localStorage.setItem('inventory', JSON.stringify(inventory));
       }, 2000);
     }
 
-    // Check for logged-in user
     window.onload = function() {
       const user = localStorage.getItem('username');
       const balance = localStorage.getItem('balance') || 0;
 
       if (user) {
-        // If logged in, show user info and hide login link
         document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
         document.getElementById('loginLink').style.display = 'none';
-      } else {
-        // If not logged in, show login link
-        document.getElementById('loginLink').style.display = 'inline';
+        document.getElementById('logoutButton').style.display = 'inline';
       }
-    }
+    };
+
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('balance');
+      window.location.reload();
+    });
   </script>
 </body>
 </html>
