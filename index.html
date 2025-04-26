@@ -27,6 +27,11 @@
       justify-content: space-between;
       align-items: center;
     }
+    header a {
+      color: #ff4c00;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
     .user-info {
       font-size: 1rem;
     }
@@ -95,7 +100,7 @@
 </head>
 <body>
   <header>
-    <div>Loot Crates</div>
+    <a href="index.html">Loot Crates</a>
     <div class="user-info">
       <span id="userBalance">User: Not logged in | Balance: 0</span>
       <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
@@ -106,15 +111,15 @@
   <!-- Loot Boxes -->
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
-      <p>iPhone Crate</p>
+      <p>iPhone Crate (100 credits)</p>
       <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
     </div>
     <div class="loot-box" onclick="openCrate('gaming')">
-      <p>Gaming Crate</p>
+      <p>Gaming Crate (100 credits)</p>
       <img src="images/ps5-console.jpg" alt="Gaming Crate" />
     </div>
     <div class="loot-box" onclick="openCrate('random')">
-      <p>Random Crate</p>
+      <p>Random Crate (100 credits)</p>
       <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
     </div>
   </div>
@@ -165,6 +170,22 @@
     };
 
     function openCrate(type) {
+      const user = localStorage.getItem('username');
+      if (!user) {
+        alert('Please login to open a crate.');
+        return;
+      }
+
+      let balance = parseInt(localStorage.getItem('balance') || '0');
+      if (balance < 100) {
+        alert('Not enough credits to open this crate.');
+        return;
+      }
+
+      balance -= 100;
+      localStorage.setItem('balance', balance);
+      document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
+
       const prizeArea = document.getElementById('prizeArea');
       const prizeText = document.getElementById('prizeText');
       const prizeImage = document.getElementById('prizeImage');
