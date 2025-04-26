@@ -1,16 +1,18 @@
-let userBalance = 1000;
-
 // Check if user is logged in
 if (!localStorage.getItem("username")) {
   window.location.href = "login.html"; // Redirect to login page if not logged in
 }
+
+// Load balance from localStorage or default to 1000
+let userBalance = parseInt(localStorage.getItem("balance")) || 1000;
+updateBalanceBar();
 
 // Update the inventory section
 function updateInventory() {
   const inventoryItems = JSON.parse(localStorage.getItem("inventory")) || [];
   const inventoryArea = document.getElementById("inventoryItems");
   inventoryArea.innerHTML = "";
-  
+
   inventoryItems.forEach(item => {
     const img = document.createElement("img");
     img.src = item.img;
@@ -19,16 +21,17 @@ function updateInventory() {
   });
 }
 
-// Example crate data
+// Crate prize data
 const crates = {
   iphone: [
     { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
     { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-    { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
-  ],
-  // Other crate types can be added similarly
+    { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" }
+  ]
+  // Add more crates if needed
 };
 
+// Open crate function
 function openCrate(type) {
   if (userBalance < 100) {
     alert("Not enough credits!");
@@ -36,7 +39,8 @@ function openCrate(type) {
   }
 
   userBalance -= 100;
-  document.getElementById("balanceBar").innerText = `Balance: ${userBalance} Credits`;
+  localStorage.setItem("balance", userBalance);
+  updateBalanceBar();
 
   const prizeList = crates[type];
   const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
@@ -47,7 +51,7 @@ function openCrate(type) {
   }, 2000);
 }
 
-// Add won prize to the inventory
+// Add won prize to inventory
 function addToInventory(prize) {
   let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
   inventory.push(prize);
@@ -55,33 +59,46 @@ function addToInventory(prize) {
   updateInventory();
 }
 
-// Logout function to clear session and redirect to login page
-function logout() {
-  localStorage.clear();
-  window.location.href = "login.html"; // Redirect to login page
+// Update balance bar UI
+function updateBalanceBar() {
+  const balanceBar = document.getElementById("balanceBar");
+  if (balanceBar) {
+    balanceBar.innerText = `Balance: ${userBalance} Credits`;
+  }
 }
 
-// Deposit function to add credits
+// Logout function
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+// Deposit function
 function depositCredits() {
   const depositAmount = prompt("Enter the amount of credits to deposit:");
   if (depositAmount && !isNaN(depositAmount) && depositAmount > 0) {
     userBalance += parseInt(depositAmount);
-    document.getElementById("balanceBar").innerText = `Balance: ${userBalance} Credits`;
+    localStorage.setItem("balance", userBalance);
+    updateBalanceBar();
   } else {
     alert("Invalid deposit amount.");
   }
 }
 
-// Withdraw function to subtract credits
+// Withdraw function
 function withdrawCredits() {
   const withdrawAmount = prompt("Enter the amount of credits to withdraw:");
   if (withdrawAmount && !isNaN(withdrawAmount) && withdrawAmount > 0 && withdrawAmount <= userBalance) {
     userBalance -= parseInt(withdrawAmount);
-    document.getElementById("balanceBar").innerText = `Balance: ${userBalance} Credits`;
+    localStorage.setItem("balance", userBalance);
+    updateBalanceBar();
   } else {
     alert("Invalid or insufficient funds.");
   }
 }
 
-// Call the inventory update function on page load
-window.onload = updateInventory;
+// On page load
+window.onload = () => {
+  updateInventory();
+  updateBalanceBar();
+};
