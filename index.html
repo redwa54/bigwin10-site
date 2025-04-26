@@ -5,7 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loot Crates</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px;
+      font-size: 2rem;
+      color: #ff4c00;
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-info {
+      font-size: 1rem;
+    }
+    .logout-button {
+      margin-left: 10px;
+      color: #ff4c00;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .box-selection {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .loot-box {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 20px;
+      border: 2px solid #ff4c00;
+      cursor: pointer;
+      transition: transform 0.3s;
+      text-align: center;
+      width: 160px;
+    }
+    .loot-box:hover {
+      transform: scale(1.03);
+    }
+    .loot-box img {
+      width: 100px;
+      margin-top: 10px;
+    }
+    .link-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .link-container a {
+      color: #ff4c00;
+      font-size: 1.2rem;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+    .link-container a:hover {
+      color: #ff2a00;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -19,35 +88,17 @@
 
   <!-- Loot Boxes -->
   <div class="box-selection">
-    <div class="loot-box">
-      <a href="iphone-crate.html">
-        <p>iPhone Crate (100 credits)</p>
-        <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
-      </a>
+    <div class="loot-box" onclick="window.location.href='iphone-crate.html'">
+      <p>iPhone Crate (100 credits)</p>
+      <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
     </div>
-    <div class="loot-box">
-      <a href="gaming-crate.html">
-        <p>Gaming Crate (100 credits)</p>
-        <img src="images/ps5-console.jpg" alt="Gaming Crate" />
-      </a>
+    <div class="loot-box" onclick="window.location.href='gaming-crate.html'">
+      <p>Gaming Crate (100 credits)</p>
+      <img src="images/ps5-console.jpg" alt="Gaming Crate" />
     </div>
-    <div class="loot-box">
-      <a href="random-crate.html">
-        <p>Random Crate (100 credits)</p>
-        <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
-      </a>
-    </div>
-    <div class="loot-box">
-      <a href="electronics-crate.html">
-        <p>Electronics Crate (200 credits)</p>
-        <img src="images/electronics-crate.jpg" alt="Electronics Crate" />
-      </a>
-    </div>
-    <div class="loot-box">
-      <a href="fashion-crate.html">
-        <p>Fashion Crate (150 credits)</p>
-        <img src="images/fashion-crate.jpg" alt="Fashion Crate" />
-      </a>
+    <div class="loot-box" onclick="window.location.href='nintendo-crate.html'">
+      <p>Nintendo Crate (100 credits)</p>
+      <img src="images/nintendo-switch.jpg" alt="Nintendo Crate" />
     </div>
   </div>
 
