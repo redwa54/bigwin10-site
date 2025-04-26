@@ -39,6 +39,11 @@
       cursor: pointer;
       text-decoration: underline;
     }
+    .auth-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
     .box-selection {
       display: flex;
       gap: 30px;
@@ -118,8 +123,11 @@
     <div><a href="index.html" style="color: #ff4c00;">Loot Crates</a></div>
     <div class="user-info">
       <span id="userBalance">User: Not logged in | Balance: 0</span>
-      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
-      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
+      <div class="auth-links">
+        <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
+        <a href="signup.html" id="signUpLink" style="color:#ff4c00; margin-left: 10px;">Sign Up</a>
+        <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
+      </div>
     </div>
   </header>
 
@@ -161,6 +169,7 @@
       if (user) {
         document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
         document.getElementById('loginLink').style.display = 'none';
+        document.getElementById('signUpLink').style.display = 'none';
         document.getElementById('logoutButton').style.display = 'inline';
       }
     };
