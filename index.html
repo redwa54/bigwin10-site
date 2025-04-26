@@ -13,27 +13,71 @@
       background: #111;
       color: #eee;
       overflow-x: hidden;
+      padding-top: 70px;
     }
     a { text-decoration: none; color: inherit; }
     img { display: block; max-width: 100%; }
 
     /* Header and Nav */
-    header { background: #000;
+    header {
+      background: #000;
       padding: 15px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: fixed;
-      width: 100%; z-index: 10;
+      top: 0;
+      width: 100%;
+      z-index: 10;
       box-shadow: 0 2px 10px rgba(0,0,0,0.7);
     }
     header .logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: #f04e23; }
     nav a { margin-left: 20px; font-weight: 600; transition: color .3s; }
     nav a:hover { color: #f04e23; }
 
+    /* Balance & Wallet Actions */
+    .wallet {
+      max-width: 1200px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .balance-bar {
+      background: rgba(0,0,0,0.6);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+    }
+    .wallet-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .wallet-actions input {
+      width: 100px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #222;
+      color: #fff;
+    }
+    .wallet-actions button {
+      background: #f04e23;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .3s;
+    }
+    .wallet-actions button:hover { background: #d7431f; }
+
     /* Hero Section */
     .hero {
-      height: 80vh;
+      height: 60vh;
       background: url('images/hero-bg.jpg') center/cover no-repeat;
       display: flex;
       align-items: center;
@@ -57,7 +101,7 @@
     .hero button:hover { background: #d7431f; }
 
     /* Crates Grid */
-    .crates { padding: 60px 20px; max-width:1200px; margin:0 auto; }
+    .crates { padding: 40px 20px; max-width:1200px; margin:0 auto; }
     .crates-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
@@ -69,7 +113,7 @@
       transition: transform .3s, box-shadow .3s;
       text-align: center;
       cursor: pointer;
-      scroll-margin-top: 100px; /* ensure header offset */
+      scroll-margin-top: 90px; /* offset for header */
     }
     .crate-card:hover {
       transform: translateY(-5px);
@@ -87,10 +131,6 @@
     .prize-area .title { font-size:1.5rem; margin-bottom:20px; }
     .prize-area img { width:200px; border-radius:10px; box-shadow:0 0 20px #f04e23; }
 
-    /* Footer spacing */
-    footer { height:40px; }
-
-    /* Smooth scroll */
     html { scroll-behavior: smooth; }
   </style>
 </head>
@@ -103,6 +143,16 @@
       <a href="#random">Random Crate</a>
     </nav>
   </header>
+
+  <div class="wallet">
+    <div class="balance-bar" id="balanceBar">Balance: 0 Credits</div>
+    <div class="wallet-actions">
+      <input id="depositAmount" type="number" placeholder="Deposit">
+      <button onclick="deposit()">Deposit</button>
+      <input id="withdrawAmount" type="number" placeholder="Withdraw">
+      <button onclick="withdraw()">Withdraw</button>
+    </div>
+  </div>
 
   <section class="hero">
     <div class="hero-content">
@@ -139,6 +189,23 @@
   <audio id="sound-legendary" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9d38d28b0.mp3?filename=success-1-6297.mp3"></audio>
 
   <script>
+    let userBalance = 0;
+    const balanceBar = document.getElementById('balanceBar');
+    function deposit() {
+      const amt = parseInt(document.getElementById('depositAmount').value);
+      if (!amt || amt <= 0) return alert('Enter a valid deposit amount');
+      userBalance += amt;
+      balanceBar.innerText = `Balance: ${userBalance} Credits`;
+      document.getElementById('depositAmount').value = '';
+    }
+    function withdraw() {
+      const amt = parseInt(document.getElementById('withdrawAmount').value);
+      if (!amt || amt <= 0) return alert('Enter a valid withdrawal amount');
+      if (amt > userBalance) return alert('Insufficient balance');
+      userBalance -= amt;
+      balanceBar.innerText = `Balance: ${userBalance} Credits`;
+      document.getElementById('withdrawAmount').value = '';
+    }
     const crates = {
       iphone: [
         {name:'iPhone 15 Pro',img:'images/iphone-15-pro.jpg',rarity:'legendary'},
@@ -159,37 +226,4 @@
         {name:'Gaming Chair',img:'images/gaming-chair.jpg',rarity:'rare'},
         {name:'Mechanical Keyboard',img:'images/mechanical-keyboard.jpg',rarity:'common'},
         {name:'Drone',img:'images/drone.jpg',rarity:'legendary'},
-        {name:'Portable SSD',img:'images/portable-ssd.jpg',rarity:'rare'},
-        {name:'LED Strip Lights',img:'images/led-strip-lights.jpg',rarity:'common'},
-        {name:'Wireless Earbuds',img:'images/wireless-earbuds.jpg',rarity:'rare'},
-        {name:'Monitor',img:'images/monitor.jpg',rarity:'legendary'},
-        {name:'Webcam',img:'images/webcam.jpg',rarity:'common'}
-      ]
-    };
-    let userBalance = 1000;
-    const balanceBar = document.getElementById('balanceBar');
-    const raritySounds = {
-      common: document.getElementById('sound-common'),
-      rare: document.getElementById('sound-rare'),
-      legendary: document.getElementById('sound-legendary')
-    };
-    function scrollToCrates(){ document.getElementById('crates').scrollIntoView({behavior:'smooth', block:'start'}); }
-    function openCrate(type, element){
-      if(userBalance<100){ alert('Not enough credits!'); return; }
-      userBalance -=100;
-      balanceBar.innerText = 'Balance: '+userBalance+' Credits';
-      // spin effect
-      element.classList.add('spinning');
-      const prizeList = crates[type];
-      const prize = prizeList[Math.floor(Math.random()*prizeList.length)];
-      setTimeout(()=>{
-        element.classList.remove('spinning');
-        document.getElementById('prizeText').innerText='🎉 You won a '+prize.name+'!';
-        document.getElementById('prizeImage').src=prize.img;
-        document.getElementById('prizeArea').style.display='block';
-        raritySounds[prize.rarity].play();
-      },3000);
-    }
-  </script>
-</body>
-</html>
+        {name:'Portable SSD',img:'images/
