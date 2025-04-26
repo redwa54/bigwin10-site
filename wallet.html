@@ -51,6 +51,16 @@
       margin-top: 20px;
       text-decoration: none;
     }
+    .history {
+      margin-top: 30px;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 15px;
+      border: 2px solid #ff4c00;
+    }
+    .history p {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -69,6 +79,13 @@
     <button onclick="withdraw()">Withdraw</button>
   </div>
 
+  <div class="history">
+    <h3>Deposit History</h3>
+    <div id="depositHistory">
+      <!-- History will be populated here -->
+    </div>
+  </div>
+
   <a href="index.html">← Back to Crates</a>
 
   <script>
@@ -79,8 +96,8 @@
 
     function deposit() {
       const amount = parseInt(document.getElementById('depositAmount').value);
-      if (isNaN(amount) || amount <= 0) {
-        alert('Enter a valid deposit amount');
+      if (isNaN(amount) || amount < 20) {
+        alert('Please enter a valid deposit amount (minimum 20 USD)');
         return;
       }
 
@@ -88,7 +105,14 @@
       balance += amount;
       localStorage.setItem('balance', balance);
       updateDisplay();
-      alert(`Deposited ${amount} credits!`);
+
+      // Simulate deposit history
+      const depositHistory = JSON.parse(localStorage.getItem('depositHistory') || '[]');
+      depositHistory.push({ amount: amount, status: 'Pending', timestamp: new Date() });
+      localStorage.setItem('depositHistory', JSON.stringify(depositHistory));
+
+      updateDepositHistory();
+      alert(`Deposited ${amount} credits! Your balance will be updated within 5-10 minutes.`);
     }
 
     function withdraw() {
@@ -110,7 +134,22 @@
       alert(`Withdrew ${amount} credits.`);
     }
 
-    window.onload = updateDisplay;
+    function updateDepositHistory() {
+      const depositHistory = JSON.parse(localStorage.getItem('depositHistory') || '[]');
+      const historyContainer = document.getElementById('depositHistory');
+      historyContainer.innerHTML = '';
+
+      depositHistory.forEach(deposit => {
+        const depositElement = document.createElement('p');
+        depositElement.innerText = `${deposit.amount} credits - Status: ${deposit.status} (Deposited on: ${new Date(deposit.timestamp).toLocaleString()})`;
+        historyContainer.appendChild(depositElement);
+      });
+    }
+
+    window.onload = function() {
+      updateDisplay();
+      updateDepositHistory();
+    }
   </script>
 </body>
 </html>
