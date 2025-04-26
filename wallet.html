@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wallet - Deposit & Withdraw</title>
+  <title>Wallet - Deposit</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
@@ -73,17 +73,18 @@
     <button onclick="deposit()">Deposit</button>
   </div>
 
-  <div class="form-section">
-    <h3>Withdraw Credits</h3>
-    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
-    <button onclick="withdraw()">Withdraw</button>
-  </div>
-
   <div class="history">
     <h3>Deposit History</h3>
     <div id="depositHistory">
       <!-- History will be populated here -->
     </div>
+  </div>
+
+  <div class="wallet-info">
+    <h3>Bitcoin Deposit Info</h3>
+    <p>To deposit Bitcoin, send the required amount to the following address:</p>
+    <p><strong>Bitcoin Wallet Address:</strong> 1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</p>
+    <p>After your payment is confirmed, your balance will be updated within 5-10 minutes.</p>
   </div>
 
   <a href="index.html">← Back to Crates</a>
@@ -113,25 +114,6 @@
 
       updateDepositHistory();
       alert(`Deposited ${amount} credits! Your balance will be updated within 5-10 minutes.`);
-    }
-
-    function withdraw() {
-      const amount = parseInt(document.getElementById('withdrawAmount').value);
-      if (isNaN(amount) || amount <= 0) {
-        alert('Enter a valid withdrawal amount');
-        return;
-      }
-
-      let balance = parseInt(localStorage.getItem('balance') || '0');
-      if (amount > balance) {
-        alert('Not enough credits to withdraw');
-        return;
-      }
-
-      balance -= amount;
-      localStorage.setItem('balance', balance);
-      updateDisplay();
-      alert(`Withdrew ${amount} credits.`);
     }
 
     function updateDepositHistory() {
