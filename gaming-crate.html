@@ -1,67 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gaming Crate</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
-    .case-container {
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #121212;
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
-
-    .slider-window {
-      width: 600px;
-      overflow: hidden;
-      border: 4px solid #ff4c00;
-      border-radius: 12px;
-      background: #1e1e1e;
-      position: relative;
+    header {
+      padding: 20px;
+      font-size: 2rem;
+      color: #ff4c00;
     }
-
-    .slider-track {
+    .back-link {
+      color: #ff4c00;
+      text-decoration: underline;
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+    .prize-area {
       display: flex;
-      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
     }
-
-    .slider-track img {
+    .prize-strip {
+      overflow: hidden;
+      width: 600px;
       height: 100px;
-      margin: 10px;
+      border: 2px solid #ff4c00;
+      border-radius: 10px;
+      position: relative;
+      background: #1e1e1e;
     }
-
-    .marker {
+    .prizes {
+      display: flex;
       position: absolute;
       top: 0;
+      left: 0;
+      transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .prizes img {
+      height: 100px;
+      margin: 0 10px;
+    }
+    .indicator {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 20px solid #ff4c00;
+      position: absolute;
+      top: -20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 4px;
-      height: 100%;
-      background-color: #ff4c00;
-      z-index: 2;
     }
-
-    .result-area {
+    .result {
       margin-top: 30px;
-      text-align: center;
+      font-size: 1.5rem;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #ff4c00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff2a00;
     }
   </style>
 </head>
 <body>
-  <div class="case-container">
-    <h1>🎮 Gaming Crate</h1>
-    <div class="slider-window">
-      <div class="marker"></div>
-      <div class="slider-track" id="sliderTrack"></div>
+  <header>Gaming Crate</header>
+  <a href="index.html" class="back-link">← Back to Crates</a>
+
+  <div class="prize-area">
+    <div class="prize-strip">
+      <div class="indicator"></div>
+      <div class="prizes" id="prizes">
+        <!-- Images inserted dynamically -->
+      </div>
     </div>
-    <div class="result-area">
-      <h2 id="winText"></h2>
-      <img id="winImage" src="" alt="Prize" style="display:none; max-height: 150px; margin-top: 20px;">
-    </div>
+    <div class="result" id="resultText">Click to open the crate!</div>
+    <button onclick="openCrate()">Open Crate</button>
   </div>
 
   <script>
@@ -73,41 +108,38 @@
       { name: 'Gaming Keyboard', img: 'images/gaming-keyboard.jpg' }
     ];
 
-    const sliderTrack = document.getElementById('sliderTrack');
+    const prizeContainer = document.getElementById('prizes');
+    const resultText = document.getElementById('resultText');
 
-    // Build a long reel of images to simulate spinning
-    let fullPrizeList = [];
-    for (let i = 0; i < 20; i++) {
-      fullPrizeList = fullPrizeList.concat(prizes);
+    // Create a long row of prize images (looped)
+    let extendedPrizes = [];
+    for (let i = 0; i < 10; i++) {
+      extendedPrizes = extendedPrizes.concat(prizes);
     }
 
-    fullPrizeList.forEach(prize => {
+    extendedPrizes.forEach(prize => {
       const img = document.createElement('img');
       img.src = prize.img;
       img.alt = prize.name;
-      sliderTrack.appendChild(img);
+      prizeContainer.appendChild(img);
     });
 
-    const winIndex = Math.floor(Math.random() * prizes.length) + prizes.length * 10; // random middle
-    const imageWidth = 120; // approx image + margin
-    const offset = winIndex * imageWidth - 300 + imageWidth / 2; // center position
+    function openCrate() {
+      const prizeCount = extendedPrizes.length;
+      const prizeWidth = 120; // 100px image + 20px margin
+      const winningIndex = Math.floor(Math.random() * prizes.length) + prizes.length * 4;
+      const offset = winningIndex * prizeWidth;
 
-    setTimeout(() => {
-      sliderTrack.style.transform = `translateX(-${offset}px)`;
+      prizeContainer.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
+      prizeContainer.style.transform = `translateX(-${offset}px)`;
+
+      const wonPrize = extendedPrizes[winningIndex];
+
       setTimeout(() => {
-        const prize = fullPrizeList[winIndex];
-        document.getElementById('winText').textContent = `🎉 You won a ${prize.name}!`;
-        const img = document.getElementById('winImage');
-        img.src = prize.img;
-        img.style.display = 'block';
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-
-        // Add to inventory
-        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-        inventory.push(prize);
-        localStorage.setItem('inventory', JSON.stringify(inventory));
-      }, 5200);
-    }, 500);
+        resultText.innerText = `🎉 You won a ${wonPrize.name}!`;
+        // Optionally, store in inventory here
+      }, 4000);
+    }
   </script>
 </body>
 </html>
