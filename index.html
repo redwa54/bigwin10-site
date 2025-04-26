@@ -9,72 +9,76 @@
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
-      background: url('images/background.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: #121212;
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     header {
       padding: 20px;
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #ff4c00;
-      text-shadow: 0 0 10px rgba(255,76,0,0.7);
-      z-index: 10;
-    }
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px;
       text-align: center;
-      z-index: 10;
     }
-    nav a {
-      color: #ff4c00;
-      font-size: 1.2rem;
-      margin: 0 20px;
-      text-decoration: none;
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-    nav a:hover {
+    .home-page {
+      text-align: center;
+      padding: 20px;
+      background: url('images/lootbox-background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       color: #fff;
-      transform: scale(1.1);
     }
-    .balance-bar {
-      background: rgba(0,0,0,0.6);
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin-top: 80px;
+    .home-page h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    .home-page .intro {
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+    }
+    .home-page .loot-box-buttons {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .loot-box-button {
+      background: #ff4c00;
+      border: none;
+      padding: 15px 30px;
       font-size: 1.2rem;
-      z-index: 10;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .loot-box-button:hover {
+      background: #ff2a00;
     }
     .box-selection {
       display: flex;
-      gap: 30px;
-      margin: 40px 0;
+      gap: 20px;
+      margin: 20px 0;
       flex-wrap: wrap;
       justify-content: center;
-      width: 90%;
-      max-width: 1200px;
-      transition: opacity 0.5s ease;
     }
     .loot-box {
-      background: rgba(30,30,30,0.8);
+      background: #1e1e1e;
       padding: 20px;
       border-radius: 20px;
       border: 2px solid #ff4c00;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s;
       text-align: center;
-      width: 200px;
     }
     .loot-box:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(255, 76, 0, 0.8);
+      transform: scale(1.03);
     }
     .loot-box img {
       width: 120px;
@@ -82,20 +86,33 @@
     }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+    }
+    button {
+      background: #ff4c00;
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #ff2a00;
     }
     .prize {
       margin-top: 30px;
       text-align: center;
       font-size: 1.5rem;
       display: none;
-      animation: fadeIn 0.5s ease;
     }
     .prize img {
       max-width: 300px;
       margin: 20px 0;
       border-radius: 15px;
-      box-shadow: 0 0 20px #ff4c00;
+      box-shadow: 0 0 15px #ff4c00;
     }
     .rolling {
       font-size: 1.2rem;
@@ -104,37 +121,32 @@
     }
     @keyframes flash {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50% { opacity: 0.5; }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body>
-  <header>BigWin10 Crates</header>
-  <nav>
-    <a href="#crate-iphone">iPhone Crate</a>
-    <a href="#crate-gaming">Gaming Crate</a>
-    <a href="#crate-random">Random Crate</a>
-  </nav>
+  <header>BigWin10 Loot Crates</header>
+  <div class="home-page">
+    <h1>Welcome to BigWin10 Loot Crates</h1>
+    <p class="intro">Select a loot box and start winning amazing prizes!</p>
+    <div class="loot-box-buttons">
+      <button class="loot-box-button" onclick="showLootBoxes()">Enter Loot Boxes</button>
+    </div>
+  </div>
 
-  <div class="balance-bar" id="balanceBar">Balance: 1000 Credits</div>
-
-  <div class="box-selection">
-    <div class="loot-box" id="crate-iphone" onclick="openCrate('iphone')">
+  <div class="box-selection" style="display: none;">
+    <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate</p>
-      <img src="images/crate-icon.png" alt="iPhone Crate" />
+      <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
     </div>
-    <div class="loot-box" id="crate-gaming" onclick="openCrate('gaming')">
+    <div class="loot-box" onclick="openCrate('gaming')">
       <p>Gaming Crate</p>
-      <img src="images/crate-icon.png" alt="Gaming Crate" />
+      <img src="images/ps5-console.jpg" alt="Gaming Crate" />
     </div>
-    <div class="loot-box" id="crate-random" onclick="openCrate('random')">
+    <div class="loot-box" onclick="openCrate('random')">
       <p>Random Crate</p>
-      <img src="images/crate-icon.png" alt="Random Crate" />
+      <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
     </div>
   </div>
 
@@ -156,20 +168,14 @@
       iphone: [
         { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
         { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" }
+        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
       ],
       gaming: [
         { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
         { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" }
+        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" },
       ],
       random: [
-        { name: "iPhone 15 Pro", img: "images/iphone-15-pro.jpg", rarity: "legendary" },
-        { name: "iPhone 14", img: "images/iphone-14.jpg", rarity: "rare" },
-        { name: "iPhone Case", img: "images/iphone-case.jpg", rarity: "common" },
-        { name: "PS5 Console", img: "images/ps5-console.jpg", rarity: "legendary" },
-        { name: "PS5 Controller", img: "images/ps5-controller.jpg", rarity: "rare" },
-        { name: "Gaming Mouse", img: "images/gaming-mouse.jpg", rarity: "common" },
         { name: "Mystery Gold Bar", img: "images/mystery-gold-bar.jpg", rarity: "legendary" },
         { name: "Smart Watch", img: "images/smart-watch.jpg", rarity: "rare" },
         { name: "Sticker Pack", img: "images/sticker-pack.jpg", rarity: "common" },
@@ -192,36 +198,24 @@
       legendary: document.getElementById("sound-legendary"),
     };
 
+    function showLootBoxes() {
+      document.querySelector('.home-page').style.display = 'none';
+      document.querySelector('.box-selection').style.display = 'flex';
+    }
+
     function openCrate(type) {
-      if (userBalance < 100) {
-        alert("Not enough credits!");
-        return;
-      }
-
-      userBalance -= 100;
-      balanceBar.innerText = `Balance: ${userBalance} Credits`;
-
-      const prizeArea = document.getElementById("prizeArea");
-      const prizeText = document.getElementById("prizeText");
-      const prizeImage = document.getElementById("prizeImage");
-      const rollingText = document.getElementById("rollingText");
-
-      prizeArea.style.display = "block";
-      rollingText.style.display = "block";
-      prizeText.style.display = "none";
-      prizeImage.style.display = "none";
-
       const prizeList = crates[type];
-      const prize = prizeList[Math.floor(Math.random() * prizeList.length)];
+      const randomPrize = prizeList[Math.floor(Math.random() * prizeList.length)];
 
-      setTimeout(() => {
-        rollingText.style.display = "none";
-        prizeText.innerText = `🎉 You won a ${prize.name}!`;
-        prizeImage.src = prize.img;
-        prizeText.style.display = "block";
-        prizeImage.style.display = "block";
-        raritySounds[prize.rarity].play();
-      }, 2000);
+      let prizeText = `🎉 You won a ${randomPrize.name}!`;
+      let prizeImage = randomPrize.img;
+      let rarity = randomPrize.rarity;
+
+      document.getElementById('prizeText').innerText = prizeText;
+      document.getElementById('prizeImage').src = prizeImage;
+      document.getElementById('prizeArea').style.display = 'block';
+
+      raritySounds[rarity].play();
     }
   </script>
 </body>
