@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Wallet - Deposit</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode"></script> <!-- QR Code library -->
   <style>
     body {
       font-family: 'Orbitron', sans-serif;
@@ -61,6 +62,9 @@
     .wallet-info p {
       margin: 10px 0;
     }
+    .qr-code {
+      margin-top: 10px;
+    }
     .history {
       margin-top: 30px;
       padding: 20px;
@@ -85,9 +89,12 @@
     <div class="wallet-info">
       <h3>Bitcoin Deposit Info</h3>
       <p>To deposit Bitcoin, send the required amount to the following address:</p>
-      <p><strong>Bitcoin Wallet Address:</strong> 1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</p>
+      <p><strong>Bitcoin Wallet Address:</strong> <span id="walletAddress">1KZFdmtTYJRtdyjvFpL8GBtXv1P5yhiJBo</span></p>
       <p><strong>Important:</strong> Please include your username in the payment notes for faster processing!</p>
       <p>After your payment is confirmed, your balance will be updated within 5-10 minutes.</p>
+      
+      <!-- QR Code for Wallet Address -->
+      <div id="qrCode" class="qr-code"></div>
     </div>
     
     <p id="btcEquivalent">BTC Equivalent: 0</p>
@@ -157,9 +164,19 @@
       });
     }
 
+    // Generate QR code for the wallet address
+    function generateQRCode() {
+      const walletAddress = document.getElementById('walletAddress').innerText;
+      const qrCodeContainer = document.getElementById('qrCode');
+      QRCode.toCanvas(qrCodeContainer, walletAddress, function (error) {
+        if (error) console.error(error);
+      });
+    }
+
     window.onload = function() {
       updateDisplay();
       updateDepositHistory();
+      generateQRCode(); // Generate the QR code when the page loads
     }
   </script>
 </body>
