@@ -1,241 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Loot Crates</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaming Crate</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: #121212;
-      color: #fff;
+    .case-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-    }
-    header {
-      padding: 20px;
-      font-size: 2rem;
-      color: #ff4c00;
-      position: relative;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .user-info {
-      font-size: 1rem;
-    }
-    .logout-button {
-      margin-left: 10px;
-      color: #ff4c00;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-    .box-selection {
-      display: flex;
-      gap: 20px;
-      margin: 20px 0;
-      flex-wrap: wrap;
       justify-content: center;
+      height: 100vh;
     }
-    .loot-box {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 20px;
-      border: 2px solid #ff4c00;
-      cursor: pointer;
-      transition: transform 0.3s;
-      text-align: center;
-      width: 160px;
-    }
-    .loot-box:hover {
-      transform: scale(1.03);
-    }
-    .loot-box img {
-      width: 100px;
-      margin-top: 10px;
-    }
-    .link-container {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .link-container a {
-      color: #ff4c00;
-      font-size: 1.2rem;
-      text-decoration: none;
-      margin: 0 10px;
-      transition: color 0.3s;
-    }
-    .link-container a:hover {
-      color: #ff2a00;
-    }
-    .prize-area {
-      text-align: center;
-      margin-top: 30px;
-    }
-    .prize-area img {
-      width: 150px;
-      margin-top: 10px;
-    }
-    .prize-slider-container {
-      width: 80%;
+
+    .slider-window {
+      width: 600px;
       overflow: hidden;
-      border: 2px solid #ff4c00;
-      border-radius: 10px;
-      margin: 20px auto;
+      border: 4px solid #ff4c00;
+      border-radius: 12px;
+      background: #1e1e1e;
       position: relative;
-      height: 100px;
     }
-    .prize-slider {
+
+    .slider-track {
       display: flex;
-      transition: transform 5s cubic-bezier(0.1, 0.9, 0.2, 1);
-      will-change: transform;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
     }
-    .prize-slider img {
+
+    .slider-track img {
       height: 100px;
-      margin: 0 5px;
+      margin: 10px;
     }
-    .highlight {
+
+    .marker {
       position: absolute;
-      left: 50%;
       top: 0;
+      left: 50%;
       transform: translateX(-50%);
+      width: 4px;
       height: 100%;
-      width: 100px;
-      border-left: 3px solid #ff4c00;
-      border-right: 3px solid #ff4c00;
-      pointer-events: none;
+      background-color: #ff4c00;
+      z-index: 2;
+    }
+
+    .result-area {
+      margin-top: 30px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div><a href="index.html" style="color: #ff4c00;">Loot Crates</a></div>
-    <div class="user-info">
-      <span id="userBalance">User: Not logged in | Balance: 0</span>
-      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
-      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
+  <div class="case-container">
+    <h1>🎮 Gaming Crate</h1>
+    <div class="slider-window">
+      <div class="marker"></div>
+      <div class="slider-track" id="sliderTrack"></div>
     </div>
-  </header>
-
-  <div class="box-selection">
-    <div class="loot-box" onclick="openCrate('iphone')">
-      <p>iPhone Crate (100 credits)</p>
-      <img src="images/iphone-15-pro.jpg" alt="iPhone Crate" />
+    <div class="result-area">
+      <h2 id="winText"></h2>
+      <img id="winImage" src="" alt="Prize" style="display:none; max-height: 150px; margin-top: 20px;">
     </div>
-    <div class="loot-box" onclick="openCrate('gaming')">
-      <p>Gaming Crate (100 credits)</p>
-      <img src="images/ps5-console.jpg" alt="Gaming Crate" />
-    </div>
-    <div class="loot-box" onclick="openCrate('random')">
-      <p>Random Crate (100 credits)</p>
-      <img src="images/mystery-gold-bar.jpg" alt="Random Crate" />
-    </div>
-    <div class="loot-box" onclick="openCrate('electronics')">
-      <p>Electronics Crate (200 credits)</p>
-      <img src="images/electronics-crate.jpg" alt="Electronics Crate" />
-    </div>
-    <div class="loot-box" onclick="openCrate('fashion')">
-      <p>Fashion Crate (150 credits)</p>
-      <img src="images/fashion-crate.jpg" alt="Fashion Crate" />
-    </div>
-  </div>
-
-  <div id="prizeArea" class="prize-area" style="display:none;">
-    <div class="prize-slider-container">
-      <div class="highlight"></div>
-      <div id="prizeSlider" class="prize-slider"></div>
-    </div>
-    <h2 id="prizeText">🎉 You won a prize!</h2>
-    <img id="prizeImage" src="" alt="Prize" />
-  </div>
-
-  <div class="link-container">
-    <a href="wallet.html">Deposit/Withdraw</a>
-    <a href="inventory.html">View Inventory</a>
-    <a href="index.html">Refresh Crates</a>
   </div>
 
   <script>
-    const crates = {
-      iphone: [
-        { name: 'iPhone 15 Pro', img: 'images/iphone-15-pro.jpg' },
-        { name: 'iPhone 14 Pro', img: 'images/iphone-14-pro.jpg' },
-        { name: 'iPhone 13 Pro', img: 'images/iphone-13-pro.jpg' },
-        { name: 'iPhone 12 Pro', img: 'images/iphone-12-pro.jpg' },
-        { name: 'iPhone Case', img: 'images/iphone-case.jpg' },
-      ],
-      gaming: [
-        { name: 'PS5 Console', img: 'images/ps5-console.jpg' },
-        { name: 'Xbox Series X', img: 'images/xbox-series-x.jpg' },
-        { name: 'Gaming PC', img: 'images/gaming-pc.jpg' },
-        { name: 'Gaming Mouse', img: 'images/gaming-mouse.jpg' },
-        { name: 'Gaming Keyboard', img: 'images/gaming-keyboard.jpg' },
-      ],
-      random: [
-        { name: 'Gold Bar', img: 'images/mystery-gold-bar.jpg' },
-        { name: '1000 Credits', img: 'images/1000-credits.jpg' },
-        { name: 'Lucky Voucher', img: 'images/lucky-voucher.jpg' },
-        { name: 'Mystery Box', img: 'images/mystery-box.jpg' },
-        { name: 'Surprise Item', img: 'images/surprise-item.jpg' },
-      ],
-      electronics: [
-        { name: 'Smart Watch', img: 'images/smartwatch.jpg' },
-        { name: 'Bluetooth Speaker', img: 'images/bluetooth-speaker.jpg' },
-        { name: 'Wireless Headphones', img: 'images/wireless-headphones.jpg' },
-      ],
-      fashion: [
-        { name: 'Leather Jacket', img: 'images/leather-jacket.jpg' },
-        { name: 'Designer Shoes', img: 'images/designer-shoes.jpg' },
-        { name: 'Smartphone Wallet', img: 'images/smartphone-wallet.jpg' },
-      ],
-    };
+    const prizes = [
+      { name: 'PS5 Console', img: 'images/ps5-console.jpg' },
+      { name: 'Xbox Series X', img: 'images/xbox-series-x.jpg' },
+      { name: 'Gaming PC', img: 'images/gaming-pc.jpg' },
+      { name: 'Gaming Mouse', img: 'images/gaming-mouse.jpg' },
+      { name: 'Gaming Keyboard', img: 'images/gaming-keyboard.jpg' }
+    ];
 
-    function openCrate(type) {
-      const user = localStorage.getItem('username');
-      if (!user) return alert('Please login to open a crate.');
+    const sliderTrack = document.getElementById('sliderTrack');
 
-      let balance = parseInt(localStorage.getItem('balance') || '0');
-      if (balance < 100) return alert('Not enough credits to open this crate.');
-
-      balance -= 100;
-      localStorage.setItem('balance', balance);
-      document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-
-      const prizeArea = document.getElementById('prizeArea');
-      const prizeSlider = document.getElementById('prizeSlider');
-      const prizeText = document.getElementById('prizeText');
-      const prizeImage = document.getElementById('prizeImage');
-      prizeArea.style.display = 'block';
-
-      const prizes = crates[type];
-      const extended = [...prizes, ...prizes, ...prizes];
-
-      prizeSlider.innerHTML = '';
-      extended.forEach(prize => {
-        const img = document.createElement('img');
-        img.src = prize.img;
-        img.alt = prize.name;
-        prizeSlider.appendChild(img);
-      });
-
-      const winningIndex = prizes.length + Math.floor(Math.random() * prizes.length);
-      const prizeWidth = 110;
-      const offset = prizeWidth * winningIndex - (document.querySelector('.prize-slider-container').offsetWidth / 2) + (prizeWidth / 2);
-
-      prizeSlider.style.transform = `translateX(-${offset}px)`;
-
-      setTimeout(() => {
-        const prize = extended[winningIndex];
-        prizeText.innerText = `🎉 You won a ${prize.name}!`;
-        prizeImage.src = prize.img;
-      }, 5200);
+    // Build a long reel of images to simulate spinning
+    let fullPrizeList = [];
+    for (let i = 0; i < 20; i++) {
+      fullPrizeList = fullPrizeList.concat(prizes);
     }
+
+    fullPrizeList.forEach(prize => {
+      const img = document.createElement('img');
+      img.src = prize.img;
+      img.alt = prize.name;
+      sliderTrack.appendChild(img);
+    });
+
+    const winIndex = Math.floor(Math.random() * prizes.length) + prizes.length * 10; // random middle
+    const imageWidth = 120; // approx image + margin
+    const offset = winIndex * imageWidth - 300 + imageWidth / 2; // center position
+
+    setTimeout(() => {
+      sliderTrack.style.transform = `translateX(-${offset}px)`;
+      setTimeout(() => {
+        const prize = fullPrizeList[winIndex];
+        document.getElementById('winText').textContent = `🎉 You won a ${prize.name}!`;
+        const img = document.getElementById('winImage');
+        img.src = prize.img;
+        img.style.display = 'block';
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+        // Add to inventory
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        inventory.push(prize);
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+      }, 5200);
+    }, 500);
   </script>
 </body>
 </html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iPhone Crate</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    .crate-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      width: 600px;
+      height: 100px;
+      overflow: hidden;
+      border: 4px solid #ff4c00;
+      background: #1e1e1e;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .prize-slider {
+      display: flex;
+      transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .prize-slider img {
+      width: 100px;
+      margin: 0 10px;
+    }
+
+    .arrow {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 20px solid #ff4c00;
+    }
+
+    #resultText {
+      font-size: 1.5rem;
+      margin-top: 20px;
+    }
+
+    #openButton {
+      background-color: #ff4c00;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div><a href="index.html" style="color: #ff4c00; text-decoration: none;">← Back to Crates</a></div>
+    <div class="user-info">
+      <span id="userBalance">User: Not logged in | Balance: 0</span>
+    </div>
+  </header>
+
+  <div class="crate-container">
+    <h1>🎁 iPhone Crate</h1>
+    <div class="slider-wrapper">
+      <div class="arrow"></div>
+      <div id="slider" class="prize-slider"></div>
+    </div>
+    <button id="openButton">Open Crate (100 credits)</button>
+    <div id="resultText"></div>
+  </div>
+
+  <script>
+    const prizes = [
+      { name: 'iPhone 15 Pro', img: 'images/iphone-15-pro.jpg' },
+      { name: 'iPhone 14 Pro', img: 'images/iphone-14-pro.jpg' },
+      { name: 'iPhone 13 Pro', img: 'images/iphone-13-pro.jpg' },
+      { name: 'iPhone 12 Pro', img: 'images/iphone-12-pro.jpg' },
+      { name: 'iPhone Case', img: 'images/iphone-case.jpg' },
+    ];
+
+    const slider = document.getElementById('slider');
+    const openButton = document.getElementById('openButton');
+    const resultText = document.getElementById('resultText');
+
+    const fillSlider = () => {
+      slider.innerHTML = '';
+      const extended = [...prizes, ...prizes, ...prizes];
+      extended.forEach(prize => {
+        const img = document.createElement('img');
+        img.src = prize.img;
+        img.alt = prize.name;
+        slider.appendChild(img);
+      });
+    };
+
+    fillSlider();
+
+    openButton.addEventListener('click', () => {
+      const winningIndex = Math.floor(Math.random() * prizes.length);
+      const prizeWidth = 120; // 100px image + 20px margin
+      const centerIndex = Math.floor(slider.children.length / 2);
+      const stopAt = centerIndex + winningIndex;
+
+      const offset = stopAt * prizeWidth - 240; // 240 = half of wrapper width (600px / 2)
+
+      slider.style.transition = 'transform 6s cubic-bezier(0.25, 1, 0.5, 1)';
+      slider.style.transform = `translateX(-${offset}px)`;
+
+      setTimeout(() => {
+        resultText.textContent = `🎉 You won a ${prizes[winningIndex].name}!`;
+
+        // Inventory save (optional):
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        inventory.push(prizes[winningIndex]);
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+
+        // Confetti (basic)
+        confetti();
+      }, 6000);
+    });
+
+    function confetti() {
+      for (let i = 0; i < 100; i++) {
+        const div = document.createElement('div');
+        div.style.position = 'fixed';
+        div.style.top = Math.random() * window.innerHeight + 'px';
+        div.style.left = Math.random() * window.innerWidth + 'px';
+        div.style.width = '8px';
+        div.style.height = '8px';
+        div.style.background = ['#ff4c00', '#ffffff', '#00ffcc'][i % 3];
+        div.style.opacity = 0.8;
+        div.style.zIndex = 9999;
+        div.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+        document.body.appendChild(div);
+
+        setTimeout(() => div.remove(), 5000);
+      }
+    }
+  </script>
+</body>
+</html>

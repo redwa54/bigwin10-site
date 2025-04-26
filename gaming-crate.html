@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaming Crate</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    .case-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .slider-window {
+      width: 600px;
+      overflow: hidden;
+      border: 4px solid #ff4c00;
+      border-radius: 12px;
+      background: #1e1e1e;
+      position: relative;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    .slider-track img {
+      height: 100px;
+      margin: 10px;
+    }
+
+    .marker {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background-color: #ff4c00;
+      z-index: 2;
+    }
+
+    .result-area {
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="case-container">
+    <h1>🎮 Gaming Crate</h1>
+    <div class="slider-window">
+      <div class="marker"></div>
+      <div class="slider-track" id="sliderTrack"></div>
+    </div>
+    <div class="result-area">
+      <h2 id="winText"></h2>
+      <img id="winImage" src="" alt="Prize" style="display:none; max-height: 150px; margin-top: 20px;">
+    </div>
+  </div>
+
+  <script>
+    const prizes = [
+      { name: 'PS5 Console', img: 'images/ps5-console.jpg' },
+      { name: 'Xbox Series X', img: 'images/xbox-series-x.jpg' },
+      { name: 'Gaming PC', img: 'images/gaming-pc.jpg' },
+      { name: 'Gaming Mouse', img: 'images/gaming-mouse.jpg' },
+      { name: 'Gaming Keyboard', img: 'images/gaming-keyboard.jpg' }
+    ];
+
+    const sliderTrack = document.getElementById('sliderTrack');
+
+    // Build a long reel of images to simulate spinning
+    let fullPrizeList = [];
+    for (let i = 0; i < 20; i++) {
+      fullPrizeList = fullPrizeList.concat(prizes);
+    }
+
+    fullPrizeList.forEach(prize => {
+      const img = document.createElement('img');
+      img.src = prize.img;
+      img.alt = prize.name;
+      sliderTrack.appendChild(img);
+    });
+
+    const winIndex = Math.floor(Math.random() * prizes.length) + prizes.length * 10; // random middle
+    const imageWidth = 120; // approx image + margin
+    const offset = winIndex * imageWidth - 300 + imageWidth / 2; // center position
+
+    setTimeout(() => {
+      sliderTrack.style.transform = `translateX(-${offset}px)`;
+      setTimeout(() => {
+        const prize = fullPrizeList[winIndex];
+        document.getElementById('winText').textContent = `🎉 You won a ${prize.name}!`;
+        const img = document.getElementById('winImage');
+        img.src = prize.img;
+        img.style.display = 'block';
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+        // Add to inventory
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        inventory.push(prize);
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+      }, 5200);
+    }, 500);
+  </script>
+</body>
+</html>
