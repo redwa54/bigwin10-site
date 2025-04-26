@@ -14,18 +14,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
     }
     header {
       padding: 20px;
       font-size: 2rem;
       color: #ff4c00;
-      position: relative;
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #1e1e1e;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
     header a {
       color: #ff4c00;
@@ -34,19 +34,24 @@
     }
     .user-info {
       font-size: 1rem;
+      display: flex;
+      align-items: center;
     }
     .logout-button {
       margin-left: 10px;
       color: #ff4c00;
       cursor: pointer;
       text-decoration: underline;
+      font-size: 1rem;
     }
     .box-selection {
       display: flex;
       gap: 20px;
-      margin: 20px 0;
+      margin: 40px 0;
       flex-wrap: wrap;
       justify-content: center;
+      width: 100%;
+      max-width: 1200px;
     }
     .loot-box {
       background: #1e1e1e;
@@ -59,15 +64,16 @@
       width: 160px;
     }
     .loot-box:hover {
-      transform: scale(1.03);
+      transform: scale(1.05);
     }
     .loot-box img {
       width: 100px;
       margin-top: 10px;
     }
     .link-container {
-      margin-top: 30px;
+      margin: 30px 0;
       text-align: center;
+      width: 100%;
     }
     .link-container a {
       color: #ff4c00;
@@ -103,12 +109,11 @@
     <a href="index.html">Loot Crates</a>
     <div class="user-info">
       <span id="userBalance">User: Not logged in | Balance: 0</span>
-      <a href="login.html" id="loginLink" style="color:#ff4c00; margin-left: 10px;">Login</a>
-      <span class="logout-button" id="logoutButton" style="display:none;">Logout</span>
+      <a href="login.html" id="loginLink" style="margin-left:10px;">Login</a>
+      <span id="logoutButton" class="logout-button" style="display:none;">Logout</span>
     </div>
   </header>
 
-  <!-- Loot Boxes -->
   <div class="box-selection">
     <div class="loot-box" onclick="openCrate('iphone')">
       <p>iPhone Crate (100 credits)</p>
@@ -124,20 +129,17 @@
     </div>
   </div>
 
-  <!-- Links to Other Pages -->
   <div class="link-container">
     <a href="wallet.html">Deposit/Withdraw</a>
     <a href="inventory.html">View Inventory</a>
-    <a href="index.html">Refresh Crates</a>
+    <a href="index.html">Home</a>
   </div>
 
-  <!-- Prize Display -->
   <div class="prize" id="prizeArea">
     <p id="prizeText">🎉 You won a prize!</p>
     <img id="prizeImage" src="" alt="Prize" />
   </div>
 
-  <!-- Sound Effects -->
   <audio id="sound-common" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2a7b4e18f0.mp3?filename=game-ui-129498.mp3"></audio>
 
   <script>
@@ -171,53 +173,36 @@
 
     function openCrate(type) {
       const user = localStorage.getItem('username');
-      if (!user) {
-        alert('Please login to open a crate.');
-        return;
-      }
-
+      if (!user) { alert('Please login to open a crate.'); return; }
       let balance = parseInt(localStorage.getItem('balance') || '0');
-      if (balance < 100) {
-        alert('Not enough credits to open this crate.');
-        return;
-      }
-
+      if (balance < 100) { alert('Not enough credits.'); return; }
       balance -= 100;
       localStorage.setItem('balance', balance);
       document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-
-      const prizeArea = document.getElementById('prizeArea');
-      const prizeText = document.getElementById('prizeText');
-      const prizeImage = document.getElementById('prizeImage');
-      const list = crates[type];
+      const prizeArea = document.getElementById('prizeArea'), prizeText = document.getElementById('prizeText'), prizeImage = document.getElementById('prizeImage');
       prizeArea.style.display = 'block';
       setTimeout(() => {
-        const prize = list[Math.floor(Math.random() * list.length)];
+        const prize = crates[type][Math.floor(Math.random()*crates[type].length)];
         prizeText.innerText = `🎉 You won a ${prize.name}!`;
         prizeImage.src = prize.img;
         document.getElementById('sound-common').play();
-
-        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        let inventory = JSON.parse(localStorage.getItem('inventory'))||[];
         inventory.push(prize);
         localStorage.setItem('inventory', JSON.stringify(inventory));
-      }, 2000);
+      },2000);
     }
 
     window.onload = function() {
       const user = localStorage.getItem('username');
-      const balance = localStorage.getItem('balance') || 0;
-
+      const balance = localStorage.getItem('balance')||0;
       if (user) {
         document.getElementById('userBalance').innerText = `User: ${user} | Balance: ${balance}`;
-        document.getElementById('loginLink').style.display = 'none';
-        document.getElementById('logoutButton').style.display = 'inline';
+        document.getElementById('loginLink').style.display='none';
+        document.getElementById('logoutButton').style.display='inline';
       }
     };
-
-    document.getElementById('logoutButton').addEventListener('click', function() {
-      localStorage.removeItem('username');
-      localStorage.removeItem('balance');
-      window.location.reload();
+    document.getElementById('logoutButton').addEventListener('click', ()=>{
+      localStorage.removeItem('username'); localStorage.removeItem('balance'); window.location.href='login.html';
     });
   </script>
 </body>
